@@ -1,0 +1,10 @@
+{
+  "text": "Test",
+  "flag": true,
+  "number": 1,
+  "number2": 1.1,
+  "data": {
+    "name": "name",
+    "jsonValue": "name"
+  }
+}

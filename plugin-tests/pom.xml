@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>da-local-uniclog</groupId>
+    <artifactId>plugin-tests</artifactId>
+    <version>0.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>da.local.uniclog</groupId>
+                <artifactId>json-modify-maven-plugin</artifactId>
+                <version>0.0-SNAPSHOT</version>
+                <executions>
+                    <execution>
+                        <id>parse-json-files</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>modify</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$.text</token>
+                                    <value>new text</value>
+                                </execution>
+                                <execution>
+                                    <token>$.flag</token>
+                                    <value>false</value>
+                                    <type>boolean</type>
+                                </execution>
+                                <execution>
+                                    <token>$.number</token>
+                                    <value>2</value>
+                                    <type>integer</type>
+                                </execution>
+                                <execution>
+                                    <token>$.number2</token>
+                                    <value>2.2</value>
+                                    <type>double</type>
+                                </execution>
+                                <execution>
+                                    <token>$.data.jsonValue</token>
+                                    <value>{"text": "Test", "flag": true, "number": 1, "number2": 2.5, "d":{"r" : "t"}}</value>
+                                    <type>json</type>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
