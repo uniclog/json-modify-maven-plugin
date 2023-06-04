@@ -1,8 +1,5 @@
 package da.local.uniclog;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.fasterxml.jackson.databind.node.ValueNode;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPathException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -13,7 +10,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
-import java.util.function.Function;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -51,7 +47,7 @@ public class RemoveJsonMojo extends AbstractMojo {
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
                 log.error(err);
-                if(!ex.isSkipIfNotFoundElement()) {
+                if (!ex.isSkipIfNotFoundElement()) {
                     throw new MojoExecutionException(err, e);
                 }
             }

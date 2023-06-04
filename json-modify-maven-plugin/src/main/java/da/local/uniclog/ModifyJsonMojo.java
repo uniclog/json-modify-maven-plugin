@@ -1,14 +1,8 @@
 package da.local.uniclog;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
-import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
-import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -16,21 +10,16 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Function;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo {
+    private final SupportUtils utils = new SupportUtils();
     private Log log;
     @Parameter(alias = "json.in")
     private String jsonInputPath;
@@ -38,7 +27,6 @@ public class ModifyJsonMojo extends AbstractMojo {
     private String jsonOutputPath;
     @Parameter(alias = "executions", required = true)
     private List<ModifyExecution> executions;
-    private final SupportUtils utils = new SupportUtils();
 
     @Override
     public void execute() throws MojoExecutionException {
