@@ -70,3 +70,45 @@
         </plugins>
     </build>
 ```
+
+### modify
+
+```xml
+<execution>
+    <id>remove-json</id>
+    <phase>prepare-package</phase>
+    <goals>
+        <goal>remove</goal>
+    </goals>
+    <configuration>
+        <json.in>target/classes/test_remove.json</json.in>
+        <json.out>target/classes/test_remove.json</json.out>
+        <executions>
+            <execution>
+                <token>$.text</token>
+                <skipIfNotFoundElement>true</skipIfNotFoundElement>
+                <validation>"text"</validation>
+            </execution>
+            <execution>
+                <token>$.jsonObjArr[?(@.value == '1')]</token>
+                <validation>[{"value":1}]</validation>
+            </execution>
+            <execution>
+                <token>$.jsonArr[1]</token>
+                <validation>"text"</validation>
+            </execution>
+            <execution>
+                <token>$.number2</token>
+                <validation>1.1</validation>
+            </execution>
+            <execution>
+                <token>$.flag</token>
+                <validation>true</validation>
+            </execution>
+            <execution>
+                <token>$.arr.null</token>
+            </execution>
+        </executions>
+    </configuration>
+</execution>
+```
