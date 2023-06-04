@@ -51,6 +51,15 @@
                                     <type>double</type>
                                 </execution>
                                 <execution>
+                                    <token>$.null</token>
+                                    <value></value>
+                                    <type>null</type>
+                                </execution>
+                                <execution>
+                                    <token>$.emptyString</token>
+                                    <value></value>
+                                </execution>
+                                <execution>
                                     <token>$.data.jsonValue</token>
                                     <value>{"text": "Test", "flag": true, "number": 1, "number2": 2.5, "d":{"r" : "t"}}</value>
                                     <type>json</type>
