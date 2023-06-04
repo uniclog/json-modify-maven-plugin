@@ -5,6 +5,8 @@
   "number2": 1.1,
   "null": "test",
   "emptyString": "test",
+  "array" : "",
+  "modifyArray" : [ "test1", "arrayTest" ],
   "data": {
     "name": "name",
     "jsonValue": "name"
