@@ -31,12 +31,17 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo {
     private Log log;
-    @Parameter(alias = "json.in", required = true)
+    @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
-    @Parameter(required = true)
+    @Parameter(alias = "executions", required = true)
     private List<ModifyExecution> executions;
+
+    private final Configuration configuration = Configuration.builder()
+            .mappingProvider(new JacksonMappingProvider())
+            .jsonProvider(new JacksonJsonNodeJsonProvider())
+            .build();
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -46,8 +51,9 @@ public class ModifyJsonMojo extends AbstractMojo {
         // executions.forEach(ex -> log.info(":: pr: "
         //         + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
 
-        DocumentContext json = getJsonFile();
+        DocumentContext json = readJsonObject();
         log.debug(":: in: " + json.jsonString());
+
         for (ModifyExecution ex : executions) {
             try {
                 Object value = getElement(ex.getType(), ex.getValue());
@@ -60,7 +66,7 @@ public class ModifyJsonMojo extends AbstractMojo {
             }
         }
 
-        saveJsonFile(json);
+        writeJsonObject(json);
         log.debug(":: out: " + json.jsonString());
     }
 
@@ -91,11 +97,11 @@ public class ModifyJsonMojo extends AbstractMojo {
         this.log = log;
     }
 
-    private DocumentContext getJsonFile() throws MojoExecutionException {
-        Configuration configuration = Configuration.builder()
-                .mappingProvider(new JacksonMappingProvider())
-                .jsonProvider(new JacksonJsonNodeJsonProvider())
-                .build();
+    private DocumentContext readJsonObject() throws MojoExecutionException {
+        if (isNull(jsonInputPath)) {
+            throw new MojoExecutionException("Parameter 'json.in' can't be null.");
+        }
+
         try (InputStream in = Files.newInputStream(FileSystems.getDefault().getPath(jsonInputPath))) {
             return JsonPath.using(configuration).parse(in, UTF_8.name());
         } catch (IOException e) {
@@ -103,7 +109,7 @@ public class ModifyJsonMojo extends AbstractMojo {
         }
     }
 
-    private void saveJsonFile(DocumentContext json) throws MojoExecutionException {
+    private void writeJsonObject(DocumentContext json) throws MojoExecutionException {
         jsonOutputPath = isNull(jsonOutputPath) ? jsonInputPath : jsonOutputPath;
         try {
             ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());

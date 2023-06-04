@@ -5,9 +5,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 public class ModifyExecution {
     @Parameter(required = true)
     private String token;
-    @Parameter(required = true)
+    @Parameter
     private String value;
-
     @Parameter
     private String type;
 
