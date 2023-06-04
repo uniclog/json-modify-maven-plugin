@@ -9,6 +9,10 @@ public class ModifyExecution {
     private String value;
     @Parameter
     private String type;
+    @Parameter
+    private String validation;
+    @Parameter(defaultValue = "false")
+    private boolean skipIfNotFoundElement;
 
     public String getToken() {
         return token;
@@ -22,4 +26,11 @@ public class ModifyExecution {
         return ModifyElementType.getType(type);
     }
 
+    public String getValidation() {
+        return validation;
+    }
+
+    public boolean isSkipIfNotFoundElement() {
+        return skipIfNotFoundElement;//Boolean.TRUE.toString().equalsIgnoreCase(skipIfNotFoundElement);
+    }
 }

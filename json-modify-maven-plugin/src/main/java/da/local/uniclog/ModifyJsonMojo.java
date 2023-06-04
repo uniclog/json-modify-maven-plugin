@@ -26,6 +26,7 @@ import java.util.function.Function;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
@@ -37,11 +38,7 @@ public class ModifyJsonMojo extends AbstractMojo {
     private String jsonOutputPath;
     @Parameter(alias = "executions", required = true)
     private List<ModifyExecution> executions;
-
-    private final Configuration configuration = Configuration.builder()
-            .mappingProvider(new JacksonMappingProvider())
-            .jsonProvider(new JacksonJsonNodeJsonProvider())
-            .build();
+    private final SupportUtils utils = new SupportUtils();
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -51,14 +48,20 @@ public class ModifyJsonMojo extends AbstractMojo {
         // executions.forEach(ex -> log.info(":: pr: "
         //         + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
 
-        DocumentContext json = readJsonObject();
+        DocumentContext json = utils.readJsonObject(jsonInputPath);
         log.debug(":: in: " + json.jsonString());
 
         for (ModifyExecution ex : executions) {
             try {
+                if (nonNull(ex.getValidation()) && validation(json, ex)) {
+                    String err = String.format("Not valid element \"%s\" = %s", ex.getToken(), ex.getValidation());
+                    log.error(err);
+                    throw new MojoExecutionException(err);
+                }
                 Object value = getElement(ex.getType(), ex.getValue());
+                var old = json.read(ex.getToken());
                 json.set(ex.getToken(), value);
-                log.info(String.format(":: %s -> %s", ex.getToken(), value));
+                log.info(String.format(":: md: %s: %s -> %s", ex.getToken(), old, value));
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
                 log.error(err);
@@ -66,7 +69,7 @@ public class ModifyJsonMojo extends AbstractMojo {
             }
         }
 
-        writeJsonObject(json);
+        utils.writeJsonObject(json, jsonOutputPath);
         log.debug(":: out: " + json.jsonString());
     }
 
@@ -97,34 +100,8 @@ public class ModifyJsonMojo extends AbstractMojo {
         this.log = log;
     }
 
-    private DocumentContext readJsonObject() throws MojoExecutionException {
-        if (isNull(jsonInputPath)) {
-            throw new MojoExecutionException("Parameter 'json.in' can't be null.");
-        }
-
-        try (InputStream in = Files.newInputStream(FileSystems.getDefault().getPath(jsonInputPath))) {
-            return JsonPath.using(configuration).parse(in, UTF_8.name());
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to read file " + jsonInputPath, e);
-        }
-    }
-
-    private void writeJsonObject(DocumentContext json) throws MojoExecutionException {
-        jsonOutputPath = isNull(jsonOutputPath) ? jsonInputPath : jsonOutputPath;
-        try {
-            ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
-            writer.writeValue(Paths.get(jsonOutputPath).toFile(), json.json());
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to write file " + jsonOutputPath, e);
-        }
-    }
-
     private <T> T getJsonValue(String value) throws MojoExecutionException {
-        Configuration configuration = Configuration.builder()
-                .mappingProvider(new JacksonMappingProvider())
-                .jsonProvider(new JacksonJsonNodeJsonProvider())
-                .build();
-        DocumentContext valueAsJson = JsonPath.using(configuration).parse(value);
+        DocumentContext valueAsJson = JsonPath.using(utils.getConfiguration()).parse(value);
         log.debug(":: JSON: " + valueAsJson.jsonString());
         return valueAsJson.json();
     }
@@ -138,4 +115,12 @@ public class ModifyJsonMojo extends AbstractMojo {
             throw new MojoExecutionException(err, ex);
         }
     }
+
+    private boolean validation(DocumentContext json, ModifyExecution ex) {
+        Object object = json.read(ex.getToken());
+        String node = object.toString();
+        log.info(String.format(":: validation: %s == %s", ex.getValidation(), node));
+        return !node.equals(ex.getValidation());
+    }
+
 }
