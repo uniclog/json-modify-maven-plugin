@@ -11,7 +11,7 @@
 
     <modules>
         <module>json-modify-maven-plugin</module>
-        <module>plugin-tests</module>
+        <module>plugin-samples</module>
     </modules>
 
 </project>
