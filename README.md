@@ -2,7 +2,7 @@
 
 ## Goals
 
-### modify
+### Goal: modify
 
 ```xml
 <build>
@@ -71,7 +71,7 @@
     </build>
 ```
 
-### modify
+### Goal: remove
 
 ```xml
 <execution>
