@@ -31,6 +31,6 @@ public class ModifyExecution {
     }
 
     public boolean isSkipIfNotFoundElement() {
-        return skipIfNotFoundElement;//Boolean.TRUE.toString().equalsIgnoreCase(skipIfNotFoundElement);
+        return skipIfNotFoundElement;
     }
 }
