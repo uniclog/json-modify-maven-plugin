@@ -37,7 +37,7 @@ public class RemoveJsonMojo extends AbstractMojo {
         SupportUtils utils = new SupportUtils();
 
         DocumentContext json = utils.readJsonObject(jsonInputPath);
-        log.info(":: in: " + json.jsonString());
+        log.debug(":: in: " + json.jsonString());
 
         for (ModifyExecution ex : executions) {
             try {
@@ -59,7 +59,7 @@ public class RemoveJsonMojo extends AbstractMojo {
 
         jsonOutputPath = isNull(jsonOutputPath) ? jsonInputPath : jsonOutputPath;
         utils.writeJsonObject(json, jsonOutputPath);
-        log.info(":: out: " + json.jsonString());
+        log.debug(":: out: " + json.jsonString());
     }
 
     @Override
