@@ -22,18 +22,19 @@
                 <version>0.0-SNAPSHOT</version>
                 <executions>
                     <execution>
-                        <id>parse-json-files</id>
+                        <id>modify-json</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>modify</goal>
                         </goals>
                         <configuration>
-                            <json.in>target/classes/test.json</json.in>
-                            <json.out>target/classes/test.json</json.out>
+                            <json.in>target/classes/test_modify.json</json.in>
+                            <json.out>target/classes/test_modify.json</json.out>
                             <executions>
                                 <execution>
                                     <token>$.text</token>
                                     <value>new text</value>
+                                    <validation>"Test"</validation>
                                 </execution>
                                 <execution>
                                     <token>$.flag</token>
@@ -70,6 +71,44 @@
                                     <token>$.data.jsonValue</token>
                                     <value>{"text": "Test", "flag": true, "number": 1, "number2": 2.5, "d":{"r" : "t"}}</value>
                                     <type>json</type>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>remove-json</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>remove</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test_remove.json</json.in>
+                            <json.out>target/classes/test_remove.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$.text</token>
+                                    <skipIfNotFoundElement>true</skipIfNotFoundElement>
+                                    <validation>"text"</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.jsonObjArr[?(@.value == '1')]</token>
+                                    <validation>[{"value":1}]</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.jsonArr[1]</token>
+                                    <validation>"text"</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.number2</token>
+                                    <validation>1.1</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.flag</token>
+                                    <validation>true</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.arr.null</token>
                                 </execution>
                             </executions>
                         </configuration>
