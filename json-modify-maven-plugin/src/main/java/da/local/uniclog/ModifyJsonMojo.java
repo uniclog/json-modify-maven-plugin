@@ -22,9 +22,11 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo {
@@ -48,8 +50,9 @@ public class ModifyJsonMojo extends AbstractMojo {
         log.debug(":: in: " + json.jsonString());
         for (ModifyExecution ex : executions) {
             try {
-                json.set(ex.getToken(), getElement(ex.getType(), ex.getValue()));
-                log.info(String.format(":: %s -> %s", ex.getToken(), ex.getValue()));
+                Object value = getElement(ex.getType(), ex.getValue());
+                json.set(ex.getToken(), value);
+                log.info(String.format(":: %s -> %s", ex.getToken(), value));
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
                 log.error(err);
@@ -64,11 +67,11 @@ public class ModifyJsonMojo extends AbstractMojo {
     private Object getElement(ModifyElementType type, String value) throws MojoExecutionException {
         switch (type) {
             case BOOLEAN:
-                return getBooleanValue(value);
+                return getPrimitiveValue(value, Boolean::valueOf, ModifyElementType.BOOLEAN);
             case INTEGER:
-                return getIntegerValue(value);
+                return getPrimitiveValue(value, Integer::valueOf, ModifyElementType.INTEGER);
             case DOUBLE:
-                return getDoubleValue(value);
+                return getPrimitiveValue(value, Double::valueOf, ModifyElementType.DOUBLE);
             case JSON:
                 return getJsonValue(value);
             default:
@@ -118,33 +121,13 @@ public class ModifyJsonMojo extends AbstractMojo {
         return valueAsJson.json();
     }
 
-    private Integer getIntegerValue(String value) throws MojoExecutionException {
+    private <T> T getPrimitiveValue(String value, Function<String, T> fun, ModifyElementType type) throws MojoExecutionException {
         try {
-            return Integer.valueOf(value);
+            return fun.apply(value);
         } catch (NumberFormatException ex) {
-            String err = String.format("Convert format exception: %s -> INTEGER", value);
+            String err = String.format("Convert format exception: %s -> %s", value, type.getValue());
             log.error(err);
             throw new MojoExecutionException(err, ex);
         }
-    }
-
-    private Double getDoubleValue(String value) throws MojoExecutionException {
-        try {
-            return Double.valueOf(value);
-        } catch (NumberFormatException ex) {
-            String err = String.format("Convert format exception: %s -> DOUBLE", value);
-            log.error(err);
-            throw new MojoExecutionException(err, ex);
-        }
-    }
-
-    private Boolean getBooleanValue(String value) throws MojoExecutionException {
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(value) &&
-                !Boolean.FALSE.toString().equalsIgnoreCase(value)) {
-            String err = String.format("Convert format exception: %s -> BOOLEAN", value);
-            log.error(err);
-            throw new MojoExecutionException(err);
-        }
-        return Boolean.valueOf(value);
     }
 }
