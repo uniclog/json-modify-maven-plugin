@@ -9,7 +9,7 @@ public class ModifyExecution {
     private String value;
 
     @Parameter
-    private String type = ModifyElementType.STRING.getValue();
+    private String type;
 
     public String getToken() {
         return token;

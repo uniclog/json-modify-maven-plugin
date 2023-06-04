@@ -7,6 +7,7 @@ public enum ModifyElementType {
     INTEGER("integer"),
     DOUBLE("double"),
     BOOLEAN("boolean"),
+    NULL("null"),
     JSON("json");
 
     private final String value;

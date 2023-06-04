@@ -74,6 +74,8 @@ public class ModifyJsonMojo extends AbstractMojo {
                 return getPrimitiveValue(value, Double::valueOf, ModifyElementType.DOUBLE);
             case JSON:
                 return getJsonValue(value);
+            case STRING:
+                return isNull(value) ? EMPTY : value;
             default:
                 return value;
         }
