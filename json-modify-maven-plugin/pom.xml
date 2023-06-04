@@ -13,6 +13,20 @@
     <version>0.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
+    <developers>
+        <developer>
+            <name>Denis V.</name>
+            <email>g.sstrav.dev@gmail.com</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
