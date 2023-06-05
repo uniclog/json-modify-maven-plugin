@@ -2,6 +2,8 @@ package da.local.uniclog;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPathException;
+import da.local.uniclog.execution.ExecutionMojo;
+import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -15,14 +17,14 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Mojo(name = "remove", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
-public class RemoveJsonMojo extends AbstractMojo {
+public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
     private Log log;
     @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
     @Parameter(alias = "executions", required = true)
-    private List<ModifyExecution> executions;
+    private List<ExecutionMojo> executions;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -30,12 +32,11 @@ public class RemoveJsonMojo extends AbstractMojo {
         // log.info(":: pr: " + jsonInputPath);
         // log.info(":: pr: " + jsonOutputPath);
         // executions.forEach(ex -> log.info(":: pr: " + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
-        SupportUtils utils = new SupportUtils();
 
-        DocumentContext json = utils.readJsonObject(jsonInputPath);
+        DocumentContext json = readJsonObject(jsonInputPath);
         log.debug(":: in: " + json.jsonString());
 
-        for (ModifyExecution ex : executions) {
+        for (ExecutionMojo ex : executions) {
             try {
                 if (nonNull(ex.getValidation()) && validation(json, ex)) {
                     String err = String.format("Not valid element \"%s\" = %s", ex.getToken(), ex.getValidation());
@@ -54,7 +55,7 @@ public class RemoveJsonMojo extends AbstractMojo {
         }
 
         jsonOutputPath = isNull(jsonOutputPath) ? jsonInputPath : jsonOutputPath;
-        utils.writeJsonObject(json, jsonOutputPath);
+        writeJsonObject(json, jsonOutputPath);
         log.debug(":: out: " + json.jsonString());
     }
 
@@ -68,7 +69,7 @@ public class RemoveJsonMojo extends AbstractMojo {
         this.log = log;
     }
 
-    private boolean validation(DocumentContext json, ModifyExecution ex) {
+    private boolean validation(DocumentContext json, ExecutionMojo ex) {
         Object object = json.read(ex.getToken());
         String node = object.toString();
         log.info(String.format(":: validation: %s == %s", ex.getValidation(), node));

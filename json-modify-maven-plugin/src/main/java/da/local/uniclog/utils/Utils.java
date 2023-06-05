@@ -1,4 +1,4 @@
-package da.local.uniclog;
+package da.local.uniclog.utils;
 
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 
-public class SupportUtils {
+public class Utils {
     private final Configuration configuration = Configuration.builder()
             .mappingProvider(new JacksonMappingProvider())
             .jsonProvider(new JacksonJsonNodeJsonProvider())

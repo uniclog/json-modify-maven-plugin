@@ -1,12 +1,14 @@
-package da.local.uniclog;
+package da.local.uniclog.execution;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
-public class ModifyExecution {
+public class ExecutionMojo {
     @Parameter(required = true)
     private String token;
     @Parameter
     private String value;
+    @Parameter(alias = "key.value")
+    private String keyValue;
     @Parameter
     private String type;
     @Parameter
@@ -22,8 +24,12 @@ public class ModifyExecution {
         return value;
     }
 
-    public ModifyElementType getType() {
-        return ModifyElementType.getType(type);
+    public String getKeyValue() {
+        return keyValue;
+    }
+
+    public ExecutionType getType() {
+        return ExecutionType.getType(type);
     }
 
     public String getValidation() {
