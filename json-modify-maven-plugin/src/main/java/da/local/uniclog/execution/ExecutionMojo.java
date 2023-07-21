@@ -7,8 +7,7 @@ public class ExecutionMojo {
     private String token;
     @Parameter
     private String value;
-    @Parameter(alias = "key.value")
-    private String keyValue;
+    private String key;
     @Parameter
     private String type;
     @Parameter
@@ -24,8 +23,8 @@ public class ExecutionMojo {
         return value;
     }
 
-    public String getKeyValue() {
-        return keyValue;
+    public String getKey() {
+        return key;
     }
 
     public ExecutionType getType() {
@@ -38,5 +37,17 @@ public class ExecutionMojo {
 
     public boolean isSkipIfNotFoundElement() {
         return skipIfNotFoundElement;
+    }
+
+    @Override
+    public String toString() {
+        return "ExecutionMojo{" +
+                "token='" + token + '\'' +
+                ", value='" + value + '\'' +
+                ", key='" + key + '\'' +
+                ", type='" + type + '\'' +
+                ", validation='" + validation + '\'' +
+                ", skipIfNotFoundElement=" + skipIfNotFoundElement +
+                '}';
     }
 }

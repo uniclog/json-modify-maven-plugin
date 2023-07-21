@@ -1,0 +1,23 @@
+{
+  "text": "text",
+  "flag": true,
+  "number": 1,
+  "number2": 1.1,
+  "jsonArr": [
+    "test1",
+    "text",
+    "test2"
+  ],
+  "l1": [
+    {
+      "i1" : "test1"
+    },
+    {
+      "i1" : "test2"
+    },
+    {
+      "i1" : "test3",
+      "i2" : "test4"
+    }
+  ]
+}
