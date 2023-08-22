@@ -7,6 +7,7 @@ public class ExecutionMojo {
     private String token;
     @Parameter
     private String value;
+    @Parameter
     private String key;
     @Parameter
     private String type;
