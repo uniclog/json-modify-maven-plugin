@@ -1,10 +1,8 @@
 package da.local.uniclog;
 
 import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.execution.ExecutionType;
 import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,11 +12,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
-import java.util.function.Function;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
@@ -63,23 +58,6 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
         log.debug(":: out: " + json.jsonString());
     }
 
-    private Object getElement(ExecutionType type, String value) throws MojoExecutionException {
-        switch (type) {
-            case BOOLEAN:
-                return getPrimitiveValue(value, Boolean::valueOf, ExecutionType.BOOLEAN);
-            case INTEGER:
-                return getPrimitiveValue(value, Integer::valueOf, ExecutionType.INTEGER);
-            case DOUBLE:
-                return getPrimitiveValue(value, Double::valueOf, ExecutionType.DOUBLE);
-            case JSON:
-                return getJsonValue(value);
-            case STRING:
-                return isNull(value) ? EMPTY : value;
-            default:
-                return value;
-        }
-    }
-
     @Override
     public Log getLog() {
         return log;
@@ -88,22 +66,6 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
     @Override
     public void setLog(Log log) {
         this.log = log;
-    }
-
-    private <T> T getJsonValue(String value) throws MojoExecutionException {
-        DocumentContext valueAsJson = JsonPath.using(getConfiguration()).parse(value);
-        log.debug(":: JSON: " + valueAsJson.jsonString());
-        return valueAsJson.json();
-    }
-
-    private <T> T getPrimitiveValue(String value, Function<String, T> fun, ExecutionType type) throws MojoExecutionException {
-        try {
-            return fun.apply(value);
-        } catch (NumberFormatException ex) {
-            String err = String.format("Convert format exception: %s -> %s", value, type.getValue());
-            log.error(err);
-            throw new MojoExecutionException(err, ex);
-        }
     }
 
     private boolean validation(DocumentContext json, ExecutionMojo ex) {
