@@ -75,4 +75,20 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
         log.info(String.format(":: validation: %s == %s", ex.getValidation(), node));
         return !node.equals(ex.getValidation());
     }
+
+    @Override
+    public String getJsonInputPath() {
+        return jsonInputPath;
+    }
+
+    @Override
+    public String getJsonOutputPath() {
+        return jsonOutputPath;
+    }
+
+    @Override
+    public List<ExecutionMojo> getExecutions() {
+        return executions;
+    }
+
 }

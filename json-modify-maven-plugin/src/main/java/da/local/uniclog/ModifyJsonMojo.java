@@ -75,4 +75,19 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
         return !node.equals(ex.getValidation());
     }
 
+    @Override
+    public String getJsonInputPath() {
+        return jsonInputPath;
+    }
+
+    @Override
+    public String getJsonOutputPath() {
+        return jsonOutputPath;
+    }
+
+    @Override
+    public List<ExecutionMojo> getExecutions() {
+        return executions;
+    }
+
 }
