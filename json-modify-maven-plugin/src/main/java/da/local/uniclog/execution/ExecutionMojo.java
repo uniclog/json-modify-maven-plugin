@@ -6,9 +6,11 @@ public class ExecutionMojo {
     @Parameter(required = true)
     private String token;
     @Parameter
+    private String key;
+    @Parameter
     private String value;
     @Parameter
-    private String key;
+    private Integer arrayIndex;
     @Parameter
     private String type;
     @Parameter
@@ -20,12 +22,16 @@ public class ExecutionMojo {
         return token;
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public String getValue() {
         return value;
     }
 
-    public String getKey() {
-        return key;
+    public Integer getArrayIndex() {
+        return arrayIndex;
     }
 
     public ExecutionType getType() {
