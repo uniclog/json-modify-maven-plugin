@@ -7,8 +7,10 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import da.local.uniclog.execution.ExecutionMojo;
 import da.local.uniclog.execution.ExecutionType;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.logging.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -83,6 +85,13 @@ public class Utils {
             //log.error(err);
             throw new MojoExecutionException(err, ex);
         }
+    }
+
+    boolean validation(DocumentContext json, ExecutionMojo ex, int exIndex, Log log) {
+        Object object = json.read(ex.getToken());
+        String node = object.toString();
+        log.info(String.format(":%d: validation: %s == %s", exIndex, ex.getValidation(), node));
+        return !node.equals(ex.getValidation());
     }
 
 }
