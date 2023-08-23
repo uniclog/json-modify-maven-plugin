@@ -28,8 +28,8 @@
                             <goal>modify</goal>
                         </goals>
                         <configuration>
-                            <json.in>target/classes/test_modify.json</json.in>
-                            <json.out>target/classes/test_modify.json</json.out>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test.json</json.out>
                             <executions>
                                 <execution>
                                     <token>$.text</token>
@@ -37,7 +37,7 @@
                                     <validation>"Test"</validation>
                                 </execution>
                                 <execution>
-                                    <token>$.flag</token>
+                                    <token>$.flag2</token>
                                     <value>false</value>
                                     <type>boolean</type>
                                 </execution>
@@ -47,7 +47,7 @@
                                     <type>integer</type>
                                 </execution>
                                 <execution>
-                                    <token>$.number2</token>
+                                    <token>$.number3</token>
                                     <value>2.2</value>
                                     <type>double</type>
                                 </execution>
@@ -77,17 +77,77 @@
                     </execution>
 
                     <execution>
+                        <id>add-json</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>insert</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>@</token>
+                                    <key>key1</key>
+                                    <value>{"a1": "a2"}</value>
+                                    <type>json</type>
+                                </execution>
+                                <execution>
+                                    <token>$.l1</token>
+                                    <value>{"l2": "test5"}</value>
+                                    <type>json</type>
+                                    <arrayIndex>1</arrayIndex>
+                                </execution>
+                                <execution>
+                                    <token>$.l1[2]</token>
+                                    <key>i1</key>
+                                    <value>test4</value>
+                                    <validation>{"i1":"test2"}</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.l1</token>
+                                    <type>null</type>
+                                </execution>
+                                <execution>
+                                    <token>$.l1</token>
+                                    <value>value1</value>
+                                </execution>
+                                <execution>
+                                    <token>$.l1</token>
+                                    <value>{"a1": "a2"}</value>
+                                    <type>json</type>
+                                </execution>
+                                <execution>
+                                    <token>@</token>
+                                    <key>key2</key>
+                                    <value>value1</value>
+                                </execution>
+                                <execution>
+                                    <token>$.jo</token>
+                                    <key>key3</key>
+                                    <value>value3</value>
+                                </execution>
+                                <execution>
+                                    <token>$.l1[2]</token>
+                                    <key>key4</key>
+                                    <value>value4</value>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+
+                    <execution>
                         <id>remove-json</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>remove</goal>
                         </goals>
                         <configuration>
-                            <json.in>target/classes/test_remove.json</json.in>
-                            <json.out>target/classes/test_remove.json</json.out>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test.json</json.out>
                             <executions>
                                 <execution>
-                                    <token>$.text</token>
+                                    <token>$.text2</token>
                                     <skipIfNotFoundElement>true</skipIfNotFoundElement>
                                     <validation>"text"</validation>
                                 </execution>
