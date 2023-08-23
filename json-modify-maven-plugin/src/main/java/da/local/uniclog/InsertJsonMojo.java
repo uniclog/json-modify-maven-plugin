@@ -32,16 +32,16 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
     @Override
     public void execute() throws MojoExecutionException {
 
-        getLog().info(":: pr: " + getJsonInputPath());
-        getLog().info(":: pr: " + getJsonOutputPath());
-        getExecutions().forEach(ex -> getLog().info(":: pr: " + ex.toString()));
+        getLog().debug(":: pr: " + getJsonInputPath());
+        getLog().debug(":: pr: " + getJsonOutputPath());
+        getExecutions().forEach(ex -> getLog().debug(":: pr: " + ex.toString()));
 
         DocumentContext json = readJsonObject(getJsonInputPath());
-        getLog().info(":: in: " + json.jsonString());
-
+        getLog().debug(":: in: " + json.jsonString());
+        var exIndex = 1;
         for (ExecutionMojo ex : getExecutions()) {
             try {
-                if (nonNull(ex.getValidation()) && validation(json, ex)) {
+                if (nonNull(ex.getValidation()) && validation(json, ex, exIndex)) {
                     String err = String.format("Not valid element \"%s\" = %s", ex.getToken(), ex.getValidation());
                     getLog().error(err);
                     throw new MojoExecutionException(err);
@@ -50,7 +50,7 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                 Object value = getElement(ex.getType(), ex.getValue());
 
                 JsonPath pathToArray = JsonPath.compile(ex.getToken());
-                getLog().info("pathToArray=" + pathToArray.getPath());
+                getLog().debug("pathToArray=" + pathToArray.getPath());
 
                 if (nonNull(ex.getKey())) {
                     json.put(ex.getToken(), ex.getKey(), value);
@@ -68,8 +68,8 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                     }
                     json.set(ex.getToken(), outArrayNode);
                 }
-
-                getLog().info(String.format(":: add -> %s : %s : %s", ex.getToken(), ex.getKey(), ex.getValue()));
+                getLog().info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
+                exIndex++;
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
                 getLog().error(err);
@@ -78,10 +78,9 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                 }
             }
         }
-        getLog().info("");
         var out = isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath();
         writeJsonObject(json, out);
-        getLog().info(":: out: " + json.jsonString());
+        getLog().debug(":: out: " + json.jsonString());
     }
 
     private void addElement(ExecutionMojo ex, ArrayNode outArrayNode, Object value) {
@@ -100,10 +99,10 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
         }
     }
 
-    private boolean validation(DocumentContext json, ExecutionMojo ex) {
+    private boolean validation(DocumentContext json, ExecutionMojo ex, int exIndex) {
         Object object = json.read(ex.getToken());
         String node = object.toString();
-        getLog().info(String.format(":: validation: %s == %s", ex.getValidation(), node));
+        getLog().info(String.format(":%d: validation: %s == %s", exIndex, ex.getValidation(), node));
         return !node.equals(ex.getValidation());
     }
 

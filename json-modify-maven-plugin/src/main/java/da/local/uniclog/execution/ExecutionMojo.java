@@ -54,6 +54,7 @@ public class ExecutionMojo {
                 ", key='" + key + '\'' +
                 ", type='" + type + '\'' +
                 ", validation='" + validation + '\'' +
+                ", arrayIndex='" + arrayIndex + '\'' +
                 ", skipIfNotFoundElement=" + skipIfNotFoundElement +
                 '}';
     }
