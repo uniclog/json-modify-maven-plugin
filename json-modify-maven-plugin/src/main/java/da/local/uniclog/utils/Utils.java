@@ -1,6 +1,5 @@
 package da.local.uniclog.utils;
 
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.jayway.jsonpath.Configuration;
@@ -46,7 +45,7 @@ public class Utils {
 
     public void writeJsonObject(DocumentContext json, String jsonOutputPath) throws MojoExecutionException {
         try {
-            ObjectWriter writer = new ObjectMapper().writer(new DefaultPrettyPrinter());
+            ObjectWriter writer = new ObjectMapper().writer(new CustomPrettyPrinter());
             writer.writeValue(Paths.get(jsonOutputPath).toFile(), json.json());
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to write file " + jsonOutputPath, e);
