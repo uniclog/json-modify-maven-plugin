@@ -35,16 +35,17 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
 
         DocumentContext json = readJsonObject(jsonInputPath);
         log.debug(":: in: " + json.jsonString());
-
+        var exIndex = 1;
         for (ExecutionMojo ex : executions) {
             try {
-                if (nonNull(ex.getValidation()) && validation(json, ex)) {
+                if (nonNull(ex.getValidation()) && validation(json, ex, exIndex)) {
                     String err = String.format("Not valid element \"%s\" = %s", ex.getToken(), ex.getValidation());
                     log.error(err);
                     throw new MojoExecutionException(err);
                 }
                 json.delete(ex.getToken());
-                log.info(String.format(":: rm -> %s", ex.getToken()));
+                log.info(String.format(":%d: rm: %s", exIndex,  ex.getToken()));
+                exIndex++;
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
                 log.error(err);
@@ -69,10 +70,10 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
         this.log = log;
     }
 
-    private boolean validation(DocumentContext json, ExecutionMojo ex) {
+    private boolean validation(DocumentContext json, ExecutionMojo ex, int exIndex) {
         Object object = json.read(ex.getToken());
         String node = object.toString();
-        log.info(String.format(":: validation: %s == %s", ex.getValidation(), node));
+        log.info(String.format(":%d: validation: %s == %s", exIndex, ex.getValidation(), node));
         return !node.equals(ex.getValidation());
     }
 
