@@ -1,0 +1,51 @@
+{
+  "text": "Test",
+  "text2": "text",
+  "flag": true,
+  "flag2": true,
+  "number": 1,
+  "number2": 1.1,
+  "number3": 1.1,
+  "jsonArr": [
+    "test1",
+    "text",
+    "test2"
+  ],
+  "jo" : {
+    "value1" : "value1"
+  },
+  "l1": [
+    {
+      "i1": "test1"
+    },
+    {
+      "i1": "test2"
+    },
+    {
+      "i1": "test3",
+      "i2": "test4"
+    }
+  ],
+  "null": "test",
+  "emptyString": "test",
+  "array": "",
+  "modifyArray": [
+    "test1",
+    "arrayTest"
+  ],
+  "data": {
+    "name": "name",
+    "jsonValue": "name"
+  },
+  "jsonObjArr": [
+    {
+      "value": 1
+    },
+    {
+      "value": "text"
+    }
+  ],
+  "arr": {
+    "null": null
+  }
+}

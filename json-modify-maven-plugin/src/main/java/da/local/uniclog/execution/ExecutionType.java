@@ -16,9 +16,9 @@ public enum ExecutionType {
         this.value = value;
     }
 
-    public static ExecutionType getType(String msg) {
+    public static ExecutionType getType(String name) {
         return Arrays.stream(ExecutionType.values())
-                .filter(it -> it.value.equalsIgnoreCase(msg))
+                .filter(it -> it.value.equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(STRING);
     }

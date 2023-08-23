@@ -6,9 +6,11 @@ public class ExecutionMojo {
     @Parameter(required = true)
     private String token;
     @Parameter
+    private String key;
+    @Parameter
     private String value;
-    @Parameter(alias = "key.value")
-    private String keyValue;
+    @Parameter
+    private Integer arrayIndex;
     @Parameter
     private String type;
     @Parameter
@@ -20,12 +22,16 @@ public class ExecutionMojo {
         return token;
     }
 
+    public String getKey() {
+        return key;
+    }
+
     public String getValue() {
         return value;
     }
 
-    public String getKeyValue() {
-        return keyValue;
+    public Integer getArrayIndex() {
+        return arrayIndex;
     }
 
     public ExecutionType getType() {
@@ -38,5 +44,18 @@ public class ExecutionMojo {
 
     public boolean isSkipIfNotFoundElement() {
         return skipIfNotFoundElement;
+    }
+
+    @Override
+    public String toString() {
+        return "ExecutionMojo{" +
+                "token='" + token + '\'' +
+                ", value='" + value + '\'' +
+                ", key='" + key + '\'' +
+                ", type='" + type + '\'' +
+                ", validation='" + validation + '\'' +
+                ", arrayIndex='" + arrayIndex + '\'' +
+                ", skipIfNotFoundElement=" + skipIfNotFoundElement +
+                '}';
     }
 }
