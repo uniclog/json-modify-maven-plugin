@@ -18,8 +18,8 @@ public class InsertJsonMojoTest {
     @BeforeEach
     public void setUp() {
         service = spy(new InsertJsonMojo());
-        doReturn("testInsert_out.json").when(service).getJsonOutputPath();
-        doReturn("testInsert_in.json").when(service).getJsonInputPath();
+        doReturn("src/test/resources/testInsert_out.json").when(service).getJsonOutputPath();
+        doReturn("src/test/resources/testInsert_in.json").when(service).getJsonInputPath();
     }
 
     @Test
