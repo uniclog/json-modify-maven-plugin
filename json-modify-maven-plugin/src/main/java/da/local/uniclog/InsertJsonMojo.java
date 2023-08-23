@@ -2,6 +2,7 @@ package da.local.uniclog;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
@@ -53,12 +54,19 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
 
                 if (nonNull(ex.getKey())) {
                     json.put(ex.getToken(), ex.getKey(), value);
-                } else if (ex.getType().equals(ExecutionType.JSON)) {
-                    ArrayNode array = json.read(ex.getToken());
-                    array.add((JsonNode) value);
-                    json.set(ex.getToken(), array);
                 } else {
-                    json.add(ex.getToken(), value);
+                    ArrayNode array = json.read(ex.getToken());
+                    ArrayNode outArrayNode = new ArrayNode(new JsonNodeFactory(true));
+                    for (int index = 0; index < array.size(); index++) {
+                        if (nonNull(ex.getArrayIndex()) && ex.getArrayIndex() == index) {
+                            addElement(ex, outArrayNode, value);
+                        }
+                        outArrayNode.add(array.get(index));
+                    }
+                    if (isNull(ex.getArrayIndex())) {
+                        addElement(ex, outArrayNode, value);
+                    }
+                    json.set(ex.getToken(), outArrayNode);
                 }
 
                 getLog().info(String.format(":: add -> %s : %s : %s", ex.getToken(), ex.getKey(), ex.getValue()));
@@ -76,6 +84,21 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
         getLog().info(":: out: " + json.jsonString());
     }
 
+    private void addElement(ExecutionMojo ex, ArrayNode outArrayNode, Object value) {
+        if (ex.getType().equals(ExecutionType.JSON)) {
+            outArrayNode.add((JsonNode) value);
+        } else if (ex.getType().equals(ExecutionType.STRING)) {
+            outArrayNode.add((String) value);
+        } else if (ex.getType().equals(ExecutionType.INTEGER)) {
+            outArrayNode.add((Integer) value);
+        } else if (ex.getType().equals(ExecutionType.DOUBLE)) {
+            outArrayNode.add((Double) value);
+        } else if (ex.getType().equals(ExecutionType.BOOLEAN)) {
+            outArrayNode.add((Boolean) value);
+        } else if (ex.getType().equals(ExecutionType.NULL)) {
+            outArrayNode.add((JsonNode) null);
+        }
+    }
 
     private boolean validation(DocumentContext json, ExecutionMojo ex) {
         Object object = json.read(ex.getToken());
@@ -84,15 +107,19 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
         return !node.equals(ex.getValidation());
     }
 
+    @Override
     public String getJsonInputPath() {
         return jsonInputPath;
     }
 
+    @Override
     public String getJsonOutputPath() {
         return jsonOutputPath;
     }
 
+    @Override
     public List<ExecutionMojo> getExecutions() {
         return executions;
     }
+
 }
