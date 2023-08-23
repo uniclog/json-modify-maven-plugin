@@ -29,7 +29,7 @@
                         </goals>
                         <configuration>
                             <json.in>target/classes/test.json</json.in>
-                            <json.out>target/classes/test.json</json.out>
+                            <json.out>target/classes/test_out.json</json.out>
                             <executions>
                                 <execution>
                                     <token>$.text</token>
@@ -84,7 +84,7 @@
                         </goals>
                         <configuration>
                             <json.in>target/classes/test.json</json.in>
-                            <json.out>target/classes/test.json</json.out>
+                            <json.out>target/classes/test_out.json</json.out>
                             <executions>
                                 <execution>
                                     <token>@</token>
@@ -144,7 +144,7 @@
                         </goals>
                         <configuration>
                             <json.in>target/classes/test.json</json.in>
-                            <json.out>target/classes/test.json</json.out>
+                            <json.out>target/classes/test_out.json</json.out>
                             <executions>
                                 <execution>
                                     <token>$.text2</token>
