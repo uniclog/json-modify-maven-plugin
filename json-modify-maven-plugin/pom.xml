@@ -5,12 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>Json Modify Maven Plugin</name>
-    <url>https://github.com/uniclog</url>
+    <url>https://github.com/uniclog/json-modify-maven-plugin</url>
     <description>Plugin for modify json files</description>
+    <inceptionYear>2023</inceptionYear>
 
     <groupId>da.local.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
-    <version>0.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>maven-plugin</packaging>
 
     <developers>
@@ -85,8 +86,50 @@
             <version>2.0.7</version>
         </dependency>
     </dependencies>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>report</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
     <build>
+        <pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+        </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -97,43 +140,15 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>default-descriptor</id>
-                        <phase>process-classes</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--<plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
+                        <id>mojo-descriptor</id>
                         <goals>
-                            <goal>single</goal>
+                            <goal>descriptor</goal>
                         </goals>
                     </execution>
-                </executions>
-                <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-ex</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
-                <configuration>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.0.1</version>
-                <executions>
                     <execution>
-                        <id>attach-sources</id>
+                        <id>help-goal</id>
                         <goals>
-                            <goal>jar</goal>
+                            <goal>helpmojo</goal>
                         </goals>
                     </execution>
                 </executions>
