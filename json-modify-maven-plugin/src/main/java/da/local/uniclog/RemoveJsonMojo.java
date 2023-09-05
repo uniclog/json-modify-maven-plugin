@@ -27,14 +27,14 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
     @Override
     public void execute() throws MojoExecutionException {
 
-        // log.info(":: pr: " + jsonInputPath);
-        // log.info(":: pr: " + jsonOutputPath);
-        // executions.forEach(ex -> log.info(":: pr: " + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
+        getLogger().debug(":: pr: " + jsonInputPath);
+        getLogger().debug(":: pr: " + jsonOutputPath);
+        getExecutions().forEach(ex -> getLogger().debug(":: pr: " + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
 
         DocumentContext json = readJsonObject(jsonInputPath);
         getLogger().debug(":: in: " + json.jsonString());
         var exIndex = 1;
-        for (ExecutionMojo ex : executions) {
+        for (ExecutionMojo ex : getExecutions()) {
             try {
                 validation(json, ex, exIndex);
 
