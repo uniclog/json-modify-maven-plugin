@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
-    @Parameter(alias = "json.in")
+    @Parameter(alias = "json.in", required = true)
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;

@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 
 @Mojo(name = "insert", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
-    @Parameter(alias = "json.in")
+    @Parameter(alias = "json.in", required = true)
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
