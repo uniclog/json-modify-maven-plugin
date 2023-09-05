@@ -8,6 +8,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 import da.local.uniclog.execution.ExecutionMojo;
 import da.local.uniclog.execution.ExecutionType;
+import da.local.uniclog.utils.JmLogger;
 import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -22,7 +23,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Mojo(name = "insert", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
-public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
+public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
     @Parameter(alias = "json.in", required = true)
     private String jsonInputPath;
     @Parameter(alias = "json.out")
@@ -33,12 +34,12 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
     @Override
     public void execute() throws MojoExecutionException {
 
-        getLogger().debug(":: pr: " + getJsonInputPath());
-        getLogger().debug(":: pr: " + getJsonOutputPath());
-        getExecutions().forEach(ex -> getLogger().debug(":: pr: " + ex.toString()));
+        debug(":: pr: " + getJsonInputPath());
+        debug(":: pr: " + getJsonOutputPath());
+        getExecutions().forEach(ex -> debug(":: pr: " + ex.toString()));
 
         DocumentContext json = readJsonObject(getJsonInputPath());
-        getLogger().debug(":: in: " + json.jsonString());
+        debug(":: in: " + json.jsonString());
         var exIndex = 1;
         for (ExecutionMojo ex : getExecutions()) {
             try {
@@ -47,7 +48,7 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                 Object value = getElement(ex.getType(), ex.getValue());
 
                 JsonPath pathToArray = JsonPath.compile(ex.getToken());
-                getLogger().debug("pathToArray=" + pathToArray.getPath());
+                debug("pathToArray=" + pathToArray.getPath());
 
                 if (nonNull(ex.getKey())) {
                     json.put(ex.getToken(), ex.getKey(), value);
@@ -65,11 +66,11 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                     }
                     json.set(ex.getToken(), outArrayNode);
                 }
-                getLogger().info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
+                info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
                 exIndex++;
             } catch (JsonPathException e) {
                 String err = String.format("Not found json element \"%s\"", ex.getToken());
-                getLogger().error(err);
+                error(err);
                 if (!ex.isSkipIfNotFoundElement()) {
                     throw new MojoExecutionException(err, e);
                 }

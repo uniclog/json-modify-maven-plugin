@@ -42,4 +42,5 @@ public interface UtilsInterface {
             throw new MojoExecutionException(err);
         }
     }
+
 }
