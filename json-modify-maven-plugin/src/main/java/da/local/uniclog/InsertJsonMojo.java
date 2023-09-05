@@ -75,8 +75,8 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
                 }
             }
         }
-        var out = isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath();
-        writeJsonObject(json, out);
+
+        writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
         getLogger().debug(":: out: " + json.jsonString());
     }
 

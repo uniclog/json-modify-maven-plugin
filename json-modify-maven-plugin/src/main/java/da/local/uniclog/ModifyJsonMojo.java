@@ -13,6 +13,8 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
+
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
     @Parameter(alias = "json.in")
@@ -49,7 +51,7 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
             }
         }
 
-        writeJsonObject(json, jsonOutputPath);
+        writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
         getLogger().debug(":: out: " + json.jsonString());
     }
 

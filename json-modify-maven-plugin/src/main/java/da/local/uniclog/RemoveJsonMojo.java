@@ -50,8 +50,7 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface {
             }
         }
 
-        jsonOutputPath = isNull(jsonOutputPath) ? jsonInputPath : jsonOutputPath;
-        writeJsonObject(json, jsonOutputPath);
+        writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
         getLogger().debug(":: out: " + json.jsonString());
     }
 
