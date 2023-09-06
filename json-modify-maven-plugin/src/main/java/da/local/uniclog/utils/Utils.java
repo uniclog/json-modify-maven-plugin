@@ -87,7 +87,7 @@ public class Utils {
         }
     }
 
-    boolean validation(DocumentContext json, ExecutionMojo ex, int exIndex, Log log) {
+    boolean validation(DocumentContext json, ExecutionMojo ex, Integer exIndex, Log log) {
         Object object = json.read(ex.getToken());
         String node = object.toString();
         log.info(String.format(":%d: validation: %s == %s", exIndex, ex.getValidation(), node));

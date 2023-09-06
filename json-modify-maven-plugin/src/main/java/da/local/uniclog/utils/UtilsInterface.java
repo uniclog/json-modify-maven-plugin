@@ -35,7 +35,7 @@ public interface UtilsInterface {
         utils.writeJsonObject(json, jsonOutputPath);
     }
 
-    default void validation(DocumentContext json, ExecutionMojo ex, int exIndex) throws MojoExecutionException {
+    default void validation(DocumentContext json, ExecutionMojo ex, Integer exIndex) throws MojoExecutionException {
         if (nonNull(ex.getValidation()) && utils.validation(json, ex, exIndex, getLogger())) {
             String err = String.format("Not valid element \"%s\" = %s", ex.getToken(), ex.getValidation());
             getLogger().error(err);
