@@ -71,7 +71,7 @@ public class Utils {
         }
     }
 
-    private <T> T getJsonValue(String value) throws MojoExecutionException {
+    private <T> T getJsonValue(String value) {
         DocumentContext valueAsJson = JsonPath.using(getConfiguration()).parse(value);
         //log.debug(":: JSON: " + valueAsJson.jsonString());
         return valueAsJson.json();
