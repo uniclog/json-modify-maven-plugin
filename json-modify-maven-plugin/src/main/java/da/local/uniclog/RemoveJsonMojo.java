@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
+import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
 @Mojo(name = "remove", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
@@ -28,11 +29,11 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
     @Override
     public void execute() throws MojoExecutionException {
 
-        debug(":: pr: " + jsonInputPath);
-        debug(":: pr: " + jsonOutputPath);
-        getExecutions().forEach(ex -> debug(":: pr: " + ex.getToken() + " : " + ex.getValue() + " : " + ex.getType()));
+        debug(":: pr: " + getJsonInputPath());
+        debug(":: pr: " + getJsonOutputPath());
+        getExecutions().forEach(ex -> debug(":: pr: " + ex.toString()));
 
-        DocumentContext json = readJsonObject(jsonInputPath);
+        DocumentContext json = readJsonObject(getJsonInputPath());
         debug(":: in: " + json.jsonString());
         var exIndex = 1;
         for (ExecutionMojo ex : getExecutions()) {
@@ -40,14 +41,22 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
                 validation(json, ex, exIndex);
 
                 json.delete(ex.getToken());
-                info(String.format(":%d: rm: %s", exIndex,  ex.getToken()));
+                info(format(":%d: rm: %s", exIndex, ex.getToken()));
                 exIndex++;
             } catch (JsonPathException e) {
-                String err = String.format("Not found json element \"%s\"", ex.getToken());
-                error(err);
+                String err = format(":%d: not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
                 if (!ex.isSkipIfNotFoundElement()) {
+                    error(err);
                     throw new MojoExecutionException(err, e);
                 }
+                error("Skip: " + err);
+            } catch (UnsupportedOperationException e) {
+                String err = format(":%d: not remove json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
+                if (!ex.isSkipIfNotFoundElement()) {
+                    error(err);
+                    throw new MojoExecutionException(err, e);
+                }
+                error("Skip: " + err);
             }
         }
 
