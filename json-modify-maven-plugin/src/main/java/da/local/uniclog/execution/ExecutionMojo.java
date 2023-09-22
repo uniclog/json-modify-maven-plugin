@@ -49,13 +49,13 @@ public class ExecutionMojo {
     @Override
     public String toString() {
         return "ExecutionMojo{" +
-                "token='" + token + '\'' +
-                ", value='" + value + '\'' +
-                ", key='" + key + '\'' +
-                ", type='" + type + '\'' +
-                ", validation='" + validation + '\'' +
-                ", arrayIndex='" + arrayIndex + '\'' +
-                ", skipIfNotFoundElement=" + skipIfNotFoundElement +
+                "token='" + getToken() + '\'' +
+                ", value='" + getValue() + '\'' +
+                ", key='" + getKey() + '\'' +
+                ", type='" + getType() + '\'' +
+                ", validation='" + getValidation() + '\'' +
+                ", arrayIndex='" + getArrayIndex() + '\'' +
+                ", skipIfNotFoundElement=" + isSkipIfNotFoundElement() +
                 '}';
     }
 }
