@@ -1,23 +1,30 @@
 package da.local.uniclog;
 
 import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.execution.ExecutionType;
-import org.apache.maven.plugin.MojoExecutionException;
+import da.local.uniclog.utils.UtilsInterface;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static da.local.uniclog.execution.ExecutionType.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-public class InsertJsonMojoTest {
-    private static final String outputPath = "src/test/resources/testInsert_out.json";
-    private static final String inputPath = "src/test/resources/testInsert_in.json";
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class InsertJsonMojoTest implements TestUtils {
     private InsertJsonMojo service;
+
+    @Override
+    public UtilsInterface getService() {
+        return service;
+    }
 
     @BeforeEach
     public void setUp() {
@@ -26,106 +33,68 @@ public class InsertJsonMojoTest {
         doReturn(inputPath).when(service).getJsonInputPath();
     }
 
-    @Test
-    public void testInsertValueKeyField() {
-        var execution1 = getSpyExecutionMojo(
-                "@", "key1", "value1",
-                ExecutionType.STRING, null, null, null);
-        var execution2 = getSpyExecutionMojo(
-                "$.jo", "key2", "value2",
-                ExecutionType.STRING, null, null, null);
-        var execution3 = getSpyExecutionMojo(
-                "$.l1[2]", "key3", "value3",
-                ExecutionType.STRING, null, null, null);
-        var execution4 = getSpyExecutionMojo(
-                "$.none", null, "value4",
-                ExecutionType.STRING, "none", true, null);
-
-        var executions = List.of(execution1, execution2, execution3, execution4);
-        doReturn(executions).when(service).getExecutions();
-
-        assertAll(
-                () -> assertDoesNotThrow(() -> service.execute()),
-                () -> assertDoesNotThrow(() -> validation(execution1, "\"value1\"", "@.key1")),
-                () -> assertDoesNotThrow(() -> validation(execution2, "\"value2\"", "$.jo.key2")),
-                () -> assertDoesNotThrow(() -> validation(execution3, "\"value3\"", "$.l1[2].key3"))
-        );
-    }
-
-    @Test
-    public void testInsertNewArrayItem() {
-        var execution1 = getSpyExecutionMojo(
-                "$.l1", null, "{\"a1\": \"a2\"}",
-                ExecutionType.JSON, null, null, null);
-        var execution2 = getSpyExecutionMojo(
-                "$.l1", null, "value1",
-                ExecutionType.STRING, null, null, null);
-        var execution3 = getSpyExecutionMojo(
-                "$.l1", null, null,
-                ExecutionType.NULL, null, null, null);
-        var execution4 = getSpyExecutionMojo(
-                "$.l1[1]", "i1", "test4",
-                ExecutionType.STRING, "{\"i1\":\"test2\"}", null, null);
-        var executions = List.of(execution1, execution2, execution3, execution4);
-        doReturn(executions).when(service).getExecutions();
-
-        assertAll(
-                () -> assertDoesNotThrow(() -> service.execute()),
-                () -> {
-                    doReturn("$.l1[3]").when(execution1).getToken();
-                    assertDoesNotThrow(() -> validation(execution1, "{\"a1\":\"a2\"}", "$.l1.[3]"));
-                },
-                () -> {
-                    doReturn("$.l1[4]").when(execution2).getToken();
-                    assertDoesNotThrow(() -> validation(execution2, "\"value1\"", "$.l1.[4]"));
-                },
-                () -> {
-                    doReturn("$.l1[5]").when(execution3).getToken();
-                    assertDoesNotThrow(() -> validation(execution3, null, "$.l1.[5]"));
-                },
-                () -> {
-                    doReturn(null).when(execution4).getKey();
-                    assertDoesNotThrow(() -> validation(execution4, "{\"i1\":\"test4\"}", "$.l1.[1]"));
-                }
-        );
-    }
-
-    @Test
-    public void testInsertNewArrayItemToIndex() {
-        var execution = getSpyExecutionMojo(
-                "$.l1", null, "{\"l2\": \"test5\"}",
-                ExecutionType.JSON, null, null, 1);
+    @MethodSource({
+            "insertValueKeyField", "insertNewArrayItem",
+            "insertNewArrayItemToIndex", "notInsertNewArrayItem_notValid_or_skipIfNotFound"})
+    @ParameterizedTest
+    public void testInsertJsonMojo(ExecutionMojo execution, String validation, String token) {
         doReturn(List.of(execution)).when(service).getExecutions();
-
         assertDoesNotThrow(() -> service.execute());
-        assertDoesNotThrow(() -> validation(execution, "{\"l2\":\"test5\"}", "$.l1.[1]"));
+        assertDoesNotThrow(() -> validation(execution, validation, token));
     }
 
-    private ExecutionMojo getSpyExecutionMojo(String token, String key, String value, ExecutionType type, String validation, Boolean skipIfNotFound, Integer arrayIndex) {
-        ExecutionMojo execution = spy(new ExecutionMojo());
-        doReturn(token).when(execution).getToken();
-        doReturn(key).when(execution).getKey();
-        doReturn(value).when(execution).getValue();
-        doReturn(type).when(execution).getType();
-        doReturn(validation).when(execution).getValidation();
-        doReturn(arrayIndex).when(execution).getArrayIndex();
-        doReturn(!Objects.isNull(skipIfNotFound)).when(execution).isSkipIfNotFoundElement();
-        return execution;
+    private Stream<Arguments> insertValueKeyField() {
+        return Stream.of(
+                of(getSpyExecutionMojo("@", "key1", "value1",
+                                STRING, null, false, null),
+                        "\"value1\"", "@.key1"),
+                of(getSpyExecutionMojo("$.jo", "key2", "value2",
+                                STRING, null, false, null),
+                        "\"value2\"", "$.jo.key2"),
+                of(getSpyExecutionMojo("$.l1[2]", "key3", "value3",
+                                STRING, null, false, null),
+                        "\"value3\"", "$.l1[2].key3"),
+                of(getSpyExecutionMojo("$.none", null, "value4",
+                                STRING, "none", true, null),
+                        null, null)
+        );
     }
 
-    private void validation(ExecutionMojo execution, String validation, String token) throws MojoExecutionException {
-        setValidation(execution, validation);
-        setToken(execution, token);
-        var document = service.readJsonObject(outputPath);
-        service.validation(document, execution, null);
+    private Stream<Arguments> insertNewArrayItem() {
+        return Stream.of(
+                of(getSpyExecutionMojo("$.l1", null, "{\"a1\": \"a2\"}",
+                                JSON, null, false, null),
+                        "{\"a1\":\"a2\"}", "$.l1.[3]"),
+                of(getSpyExecutionMojo("$.l1", null, "value1",
+                                STRING, null, false, null),
+                        "\"value1\"", "$.l1.[3]"),
+                of(getSpyExecutionMojo("$.l1", null, null,
+                                NULL, null, false, null),
+                        null, "$.l1.[5]"),
+                of(getSpyExecutionMojo("$.l1[1]", "i1", "test4",
+                                STRING, "{\"i1\":\"test2\"}", false, null),
+                        "{\"i1\":\"test4\"}", "$.l1.[1]")
+        );
     }
 
-    private void setValidation(ExecutionMojo execution, String validation) {
-        doReturn(validation).when(execution).getValidation();
+    private Stream<Arguments> notInsertNewArrayItem_notValid_or_skipIfNotFound() {
+        return Stream.of(
+                of(getSpyExecutionMojo("$.l1[0]", "i1", "test4",
+                                STRING, "{\"i1\":\"none\"}", true, null)
+                        , "{\"i1\":\"test1\"}", "$.l1.[0]"),
+                of(getSpyExecutionMojo("$.jsonArrNon", null, "value1",
+                                STRING, null, true, null)
+                        , "{\"i1\":\"test1\"}", "$.l1.[0]")
+        );
     }
 
-    private void setToken(ExecutionMojo execution, String validation) {
-        doReturn(validation).when(execution).getToken();
+    private Stream<Arguments> insertNewArrayItemToIndex() {
+        return Stream.of(
+                of(getSpyExecutionMojo("$.l1", null, "{\"l2\": \"test5\"}",
+                                JSON, null, false, 1),
+                        "{\"l2\":\"test5\"}", "$.l1.[1]"),
+                of(getSpyExecutionMojo("$.jsonArr", null, "newValue",
+                                STRING, null, false, 1),
+                        "\"text\"", "$.jsonArr.[2]"));
     }
-
 }

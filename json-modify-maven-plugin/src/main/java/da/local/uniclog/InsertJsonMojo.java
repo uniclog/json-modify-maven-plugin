@@ -69,11 +69,19 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
                 info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
                 exIndex++;
             } catch (JsonPathException e) {
-                String err = String.format("Not found json element \"%s\"", ex.getToken());
-                error(err);
+                String err = String.format(":%d: not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
                 if (!ex.isSkipIfNotFoundElement()) {
+                    error(err);
                     throw new MojoExecutionException(err, e);
                 }
+                error("Skip: " + err);
+            } catch (UnsupportedOperationException e) {
+                String err = String.format(":%d: not insert json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
+                if (!ex.isSkipIfNotFoundElement()) {
+                    error(err);
+                    throw new MojoExecutionException(err, e);
+                }
+                error("Skip: " + err);
             }
         }
 
