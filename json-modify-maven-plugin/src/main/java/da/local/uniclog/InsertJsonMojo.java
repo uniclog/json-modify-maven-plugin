@@ -5,9 +5,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.JsonPathException;
 import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.execution.ExecutionType;
+import da.local.uniclog.utils.ExecuteConsumer;
 import da.local.uniclog.utils.JmLogger;
 import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
@@ -19,6 +18,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
+import static da.local.uniclog.execution.ExecutionType.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -33,74 +33,46 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
 
     @Override
     public void execute() throws MojoExecutionException {
+        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
+            Object value = getElement(ex.getType(), ex.getValue());
 
-        debug(":: pr: " + getJsonInputPath());
-        debug(":: pr: " + getJsonOutputPath());
-        getExecutions().forEach(ex -> debug(":: pr: " + ex.toString()));
+            JsonPath pathToArray = JsonPath.compile(ex.getToken());
+            debug("pathToArray=" + pathToArray.getPath());
 
-        DocumentContext json = readJsonObject(getJsonInputPath());
-        debug(":: in: " + json.jsonString());
-        var exIndex = 1;
-        for (ExecutionMojo ex : getExecutions()) {
-            try {
-                validation(json, ex, exIndex);
-
-                Object value = getElement(ex.getType(), ex.getValue());
-
-                JsonPath pathToArray = JsonPath.compile(ex.getToken());
-                debug("pathToArray=" + pathToArray.getPath());
-
-                if (nonNull(ex.getKey())) {
-                    json.put(ex.getToken(), ex.getKey(), value);
-                } else {
-                    ArrayNode array = json.read(ex.getToken());
-                    ArrayNode outArrayNode = new ArrayNode(new JsonNodeFactory(true));
-                    for (int index = 0; index < array.size(); index++) {
-                        if (nonNull(ex.getArrayIndex()) && ex.getArrayIndex() == index) {
-                            addElement(ex, outArrayNode, value);
-                        }
-                        outArrayNode.add(array.get(index));
-                    }
-                    if (isNull(ex.getArrayIndex())) {
+            if (nonNull(ex.getKey())) {
+                json.put(ex.getToken(), ex.getKey(), value);
+            } else {
+                ArrayNode array = json.read(ex.getToken());
+                ArrayNode outArrayNode = new ArrayNode(new JsonNodeFactory(true));
+                for (int index = 0; index < array.size(); index++) {
+                    if (nonNull(ex.getArrayIndex()) && ex.getArrayIndex() == index) {
                         addElement(ex, outArrayNode, value);
                     }
-                    json.set(ex.getToken(), outArrayNode);
+                    outArrayNode.add(array.get(index));
                 }
-                info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
-                exIndex++;
-            } catch (JsonPathException e) {
-                String err = String.format(":%d: not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
-                if (!ex.isSkipIfNotFoundElement()) {
-                    error(err);
-                    throw new MojoExecutionException(err, e);
+                if (isNull(ex.getArrayIndex())) {
+                    addElement(ex, outArrayNode, value);
                 }
-                error("Skip: " + err);
-            } catch (UnsupportedOperationException e) {
-                String err = String.format(":%d: not insert json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
-                if (!ex.isSkipIfNotFoundElement()) {
-                    error(err);
-                    throw new MojoExecutionException(err, e);
-                }
-                error("Skip: " + err);
+                json.set(ex.getToken(), outArrayNode);
             }
-        }
+            info(String.format(":%d: ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
+        };
 
-        writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
-        getLogger().debug(":: out: " + json.jsonString());
+        executeAction(executeConsumer);
     }
 
     private void addElement(ExecutionMojo ex, ArrayNode outArrayNode, Object value) {
-        if (ex.getType().equals(ExecutionType.JSON)) {
+        if (ex.getType().equals(JSON)) {
             outArrayNode.add((JsonNode) value);
-        } else if (ex.getType().equals(ExecutionType.STRING)) {
+        } else if (ex.getType().equals(STRING)) {
             outArrayNode.add((String) value);
-        } else if (ex.getType().equals(ExecutionType.INTEGER)) {
+        } else if (ex.getType().equals(INTEGER)) {
             outArrayNode.add((Integer) value);
-        } else if (ex.getType().equals(ExecutionType.DOUBLE)) {
+        } else if (ex.getType().equals(DOUBLE)) {
             outArrayNode.add((Double) value);
-        } else if (ex.getType().equals(ExecutionType.BOOLEAN)) {
+        } else if (ex.getType().equals(BOOLEAN)) {
             outArrayNode.add((Boolean) value);
-        } else if (ex.getType().equals(ExecutionType.NULL)) {
+        } else if (ex.getType().equals(NULL)) {
             outArrayNode.add((JsonNode) null);
         }
     }
