@@ -1,4 +1,4 @@
-package da.local.uniclog.utils;
+package com.github.uniclog.utils;
 
 import org.apache.maven.plugin.logging.Log;
 

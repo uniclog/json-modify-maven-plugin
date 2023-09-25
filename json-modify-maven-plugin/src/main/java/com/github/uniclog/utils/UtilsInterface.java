@@ -1,9 +1,9 @@
-package da.local.uniclog.utils;
+package com.github.uniclog.utils;
 
+import com.github.uniclog.execution.ExecutionMojo;
+import com.github.uniclog.execution.ExecutionType;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPathException;
-import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.execution.ExecutionType;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 

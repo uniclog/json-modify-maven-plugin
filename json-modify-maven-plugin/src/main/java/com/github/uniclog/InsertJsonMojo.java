@@ -1,14 +1,15 @@
-package da.local.uniclog;
+package com.github.uniclog;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.github.uniclog.execution.ExecutionMojo;
+import com.github.uniclog.execution.ExecutionType;
+import com.github.uniclog.utils.ExecuteConsumer;
+import com.github.uniclog.utils.JmLogger;
+import com.github.uniclog.utils.UtilsInterface;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.utils.ExecuteConsumer;
-import da.local.uniclog.utils.JmLogger;
-import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -18,7 +19,6 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
-import static da.local.uniclog.execution.ExecutionType.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -62,17 +62,17 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
     }
 
     private void addElement(ExecutionMojo ex, ArrayNode outArrayNode, Object value) {
-        if (ex.getType().equals(JSON)) {
+        if (ex.getType().equals(ExecutionType.JSON)) {
             outArrayNode.add((JsonNode) value);
-        } else if (ex.getType().equals(STRING)) {
+        } else if (ex.getType().equals(ExecutionType.STRING)) {
             outArrayNode.add((String) value);
-        } else if (ex.getType().equals(INTEGER)) {
+        } else if (ex.getType().equals(ExecutionType.INTEGER)) {
             outArrayNode.add((Integer) value);
-        } else if (ex.getType().equals(DOUBLE)) {
+        } else if (ex.getType().equals(ExecutionType.DOUBLE)) {
             outArrayNode.add((Double) value);
-        } else if (ex.getType().equals(BOOLEAN)) {
+        } else if (ex.getType().equals(ExecutionType.BOOLEAN)) {
             outArrayNode.add((Boolean) value);
-        } else if (ex.getType().equals(NULL)) {
+        } else if (ex.getType().equals(ExecutionType.NULL)) {
             outArrayNode.add((JsonNode) null);
         }
     }

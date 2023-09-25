@@ -1,4 +1,4 @@
-package da.local.uniclog.execution;
+package com.github.uniclog.execution;
 
 import org.apache.maven.plugins.annotations.Parameter;
 
