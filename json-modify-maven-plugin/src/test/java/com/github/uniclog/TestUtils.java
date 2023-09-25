@@ -1,8 +1,8 @@
-package da.local.uniclog;
+package com.github.uniclog;
 
-import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.execution.ExecutionType;
-import da.local.uniclog.utils.UtilsInterface;
+import com.github.uniclog.execution.ExecutionMojo;
+import com.github.uniclog.execution.ExecutionType;
+import com.github.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.MojoExecutionException;
 
 import static org.mockito.Mockito.doReturn;

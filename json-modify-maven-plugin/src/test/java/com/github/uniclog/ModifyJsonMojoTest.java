@@ -1,7 +1,8 @@
-package da.local.uniclog;
+package com.github.uniclog;
 
-import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.utils.UtilsInterface;
+import com.github.uniclog.execution.ExecutionMojo;
+import com.github.uniclog.execution.ExecutionType;
+import com.github.uniclog.utils.UtilsInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +12,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static da.local.uniclog.execution.ExecutionType.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.Mockito.doReturn;
@@ -46,19 +46,19 @@ class ModifyJsonMojoTest implements TestUtils {
     private Stream<Arguments> modifyJsonElement() {
         return Stream.of(
                 of(getSpyExecutionMojo("$.text", null, "newText",
-                                STRING, "\"text\"", false, null),
+                                ExecutionType.STRING, "\"text\"", false, null),
                         "\"newText\"", "$.text"),
                 of(getSpyExecutionMojo("$.flag", null, "false",
-                                BOOLEAN, null, false, null),
+                                ExecutionType.BOOLEAN, null, false, null),
                         "false", "$.flag"),
                 of(getSpyExecutionMojo("$.jsonArr[0]", null, "newText",
-                                STRING, "\"test1\"", false, null),
+                                ExecutionType.STRING, "\"test1\"", false, null),
                         "\"newText\"", "$.jsonArr[0]"),
                 of(getSpyExecutionMojo("$.l1.[0].i1", null, "newText",
-                                STRING, "\"test1\"", false, null),
+                                ExecutionType.STRING, "\"test1\"", false, null),
                         "\"newText\"", "$.l1.[0].i1"),
                 of(getSpyExecutionMojo("$.l1.[0]", null, "{ \"i1\": \"newText\" }",
-                                JSON, null, false, null),
+                                ExecutionType.JSON, null, false, null),
                         "{\"i1\":\"newText\"}", "$.l1.[0]")
         );
     }
@@ -66,10 +66,10 @@ class ModifyJsonMojoTest implements TestUtils {
     private Stream<Arguments> notModifyJsonElement_notValid_or_skipIfNotFound() {
         return Stream.of(
                 of(getSpyExecutionMojo("$.text", null, "newText",
-                                STRING, "test2", true, null),
+                                ExecutionType.STRING, "test2", true, null),
                         null, null),
                 of(getSpyExecutionMojo("$.none", null, "newText",
-                                STRING, "test2", true, null),
+                                ExecutionType.STRING, "test2", true, null),
                         null, null)
         );
     }

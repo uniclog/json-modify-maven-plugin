@@ -1,10 +1,10 @@
-package da.local.uniclog;
+package com.github.uniclog;
 
+import com.github.uniclog.execution.ExecutionMojo;
+import com.github.uniclog.utils.ExecuteConsumer;
+import com.github.uniclog.utils.JmLogger;
+import com.github.uniclog.utils.UtilsInterface;
 import com.jayway.jsonpath.DocumentContext;
-import da.local.uniclog.execution.ExecutionMojo;
-import da.local.uniclog.utils.ExecuteConsumer;
-import da.local.uniclog.utils.JmLogger;
-import da.local.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
@@ -16,8 +16,8 @@ import java.util.List;
 
 import static java.lang.String.format;
 
-@Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
-public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
+@Mojo(name = "remove", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
+public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
     @Parameter(alias = "json.in", required = true)
     private String jsonInputPath;
     @Parameter(alias = "json.out")
@@ -27,11 +27,9 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
 
     @Override
     public void execute() throws MojoExecutionException {
-        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer>  executeConsumer = (json, ex, exIndex) -> {
-            Object value = getElement(ex.getType(), ex.getValue());
-            var old = json.read(ex.getToken());
-            json.set(ex.getToken(), value);
-            info(format(":%d: md: %s: %s -> %s", exIndex, ex.getToken(), old, value));
+        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
+            json.delete(ex.getToken());
+            info(format(":%d: rm: %s", exIndex, ex.getToken()));
         };
 
         executeAction(executeConsumer);
