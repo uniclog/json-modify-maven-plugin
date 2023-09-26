@@ -1,4 +1,4 @@
-package com.github.uniclog.utils;
+package io.github.uniclog.utils;
 
 import org.apache.maven.plugin.MojoExecutionException;
 

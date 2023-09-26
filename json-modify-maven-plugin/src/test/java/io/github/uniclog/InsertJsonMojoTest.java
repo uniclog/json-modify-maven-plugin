@@ -1,7 +1,7 @@
-package com.github.uniclog;
+package io.github.uniclog;
 
-import com.github.uniclog.execution.ExecutionMojo;
-import com.github.uniclog.utils.UtilsInterface;
+import io.github.uniclog.execution.ExecutionMojo;
+import io.github.uniclog.utils.UtilsInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.uniclog.execution.ExecutionType.*;
+import static io.github.uniclog.execution.ExecutionType.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.params.provider.Arguments.of;
 import static org.mockito.Mockito.doReturn;
