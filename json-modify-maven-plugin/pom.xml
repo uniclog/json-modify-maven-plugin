@@ -9,7 +9,7 @@
     <description>Plugin for modify json files</description>
     <inceptionYear>2023</inceptionYear>
 
-    <groupId>com.github.uniclog</groupId>
+    <groupId>io.github.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
     <version>1.2-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
