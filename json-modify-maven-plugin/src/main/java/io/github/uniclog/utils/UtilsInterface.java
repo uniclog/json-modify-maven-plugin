@@ -40,19 +40,19 @@ public interface UtilsInterface {
 
                 exIndex++;
             } catch (JsonPathException e) {
-                String err = format(":%d: not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
+                String err = format("(%d) not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
                 if (!ex.isSkipIfNotFoundElement()) {
                     getLogger().error(err);
                     throw new MojoExecutionException(err, e);
                 }
-                getLogger().error("Skip: " + err);
+                getLogger().warn("Skip: " + err);
             } catch (UnsupportedOperationException e) {
-                String err = format(":%d: not modify json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
+                String err = format("(%d) not modify json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
                 if (!ex.isSkipIfNotFoundElement()) {
                     getLogger().error(err);
                     throw new MojoExecutionException(err, e);
                 }
-                getLogger().error("Skip: " + err);
+                getLogger().warn("Skip: " + err);
             }
         }
 
@@ -74,7 +74,7 @@ public interface UtilsInterface {
 
     default void validation(DocumentContext json, ExecutionMojo ex, Integer exIndex) throws UnsupportedOperationException {
         if (nonNull(ex.getValidation()) && utils.validation(json, ex, exIndex, getLogger())) {
-            String err = String.format(":%d: Not valid element \"%s\" = %s", exIndex, ex.getToken(), ex.getValidation());
+            String err = String.format("(%d) Not valid element \"%s\" = %s", exIndex, ex.getToken(), ex.getValidation());
             getLogger().error(err);
             throw new UnsupportedOperationException(err);
         }

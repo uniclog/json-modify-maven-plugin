@@ -31,7 +31,7 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
             Object value = getElement(ex.getType(), ex.getValue());
             var old = json.read(ex.getToken());
             json.set(ex.getToken(), value);
-            info(format(":%d: md: %s: %s -> %s", exIndex, ex.getToken(), old, value));
+            info(format("(%d) md: %s: %s -> %s", exIndex, ex.getToken(), old, value));
         };
 
         executeAction(executeConsumer);

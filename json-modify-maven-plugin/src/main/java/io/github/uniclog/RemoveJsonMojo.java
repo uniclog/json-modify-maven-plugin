@@ -29,7 +29,7 @@ public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
     public void execute() throws MojoExecutionException {
         ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
             json.delete(ex.getToken());
-            info(format(":%d: rm: %s", exIndex, ex.getToken()));
+            info(format("(%d) rm: %s", exIndex, ex.getToken()));
         };
 
         executeAction(executeConsumer);
