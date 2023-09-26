@@ -1,10 +1,10 @@
-package com.github.uniclog;
+package io.github.uniclog;
 
-import com.github.uniclog.execution.ExecutionMojo;
-import com.github.uniclog.utils.ExecuteConsumer;
-import com.github.uniclog.utils.JmLogger;
-import com.github.uniclog.utils.UtilsInterface;
 import com.jayway.jsonpath.DocumentContext;
+import io.github.uniclog.execution.ExecutionMojo;
+import io.github.uniclog.utils.ExecuteConsumer;
+import io.github.uniclog.utils.JmLogger;
+import io.github.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;

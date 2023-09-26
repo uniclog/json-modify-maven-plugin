@@ -1,8 +1,8 @@
-package com.github.uniclog;
+package io.github.uniclog;
 
-import com.github.uniclog.execution.ExecutionMojo;
-import com.github.uniclog.execution.ExecutionType;
-import com.github.uniclog.utils.UtilsInterface;
+import io.github.uniclog.execution.ExecutionMojo;
+import io.github.uniclog.execution.ExecutionType;
+import io.github.uniclog.utils.UtilsInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;

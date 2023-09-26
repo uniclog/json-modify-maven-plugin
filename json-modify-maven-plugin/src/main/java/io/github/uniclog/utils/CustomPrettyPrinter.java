@@ -1,4 +1,4 @@
-package com.github.uniclog.utils;
+package io.github.uniclog.utils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
