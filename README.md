@@ -77,6 +77,10 @@ ___
                 <value>new text</value>
                 <validation>"Test"</validation>
             </execution>
+            <execution>
+                <token>$.modifyArray.[1]</token>
+                <value>new value</value>
+            </execution>
         </executions>
     </configuration>
 </execution>
@@ -86,8 +90,11 @@ ___
 
 ```log
 [INFO] --- json-modify:1.1:modify (modify-json) @ plugin-samples ---
+[DEBUG] :: in: {"text":"Test","number":1,"modifyArray":["test1","old value"]}
 [INFO] :1: validation: "Test" == "Test"
 [INFO] (1) md: $.text: "Test" -> new text
+[INFO] (2) md: $.modifyArray.[1]: "old value" -> new value
+[DEBUG] :: out: {"text":"new text","number":1,"modifyArray":["test1","new value"]}
 ```
 
 <details><summary>Modify samples</summary>
@@ -196,10 +203,12 @@ ___
 
 ```log
 [INFO] --- json-modify:1.1:remove (remove-json) @ plugin-samples ---
+[DEBUG] :: in: {"text":"text","text2":"text","jsonObjArr":[{"value":1},{"value":"text"}]}
 [INFO] :1: validation: "text" == "text"
 [INFO] (1) rm: $.text2
 [INFO] :2: validation: [{"value":1}] == [{"value":1}]
 [INFO] (2) rm: $.jsonObjArr[?(@.value == '1')]
+[DEBUG] :: out: {"text":"text","jsonObjArr":[{"value":"text"}]}
 ```
 
 <details><summary>Remove samples</summary>
@@ -262,23 +271,24 @@ ___
 ```xml
 
 <execution>
-    <id>remove-json</id>
+    <id>add-json</id>
     <phase>prepare-package</phase>
     <goals>
-        <goal>remove</goal>
+        <goal>insert</goal>
     </goals>
     <configuration>
         <json.in>target/classes/test.json</json.in>
         <json.out>target/classes/test_out.json</json.out>
         <executions>
             <execution>
-                <token>$.text2</token>
-                <skipIfNotFoundElement>true</skipIfNotFoundElement>
-                <validation>"text"</validation>
-            </execution>
+                <token>@</token>
+                <key>key1</key>
+                <value>{"a1": "a2"}</value>
+                <type>json</type>
+            </execution> 
             <execution>
-                <token>$.jsonObjArr[?(@.value == '1')]</token>
-                <validation>[{"value":1}]</validation>
+                <token>$.l1</token>
+                <value>value1</value>
             </execution>
         </executions>
     </configuration>
@@ -287,10 +297,10 @@ ___
 
 ```log
 [INFO] --- json-modify:1.1:insert (add-json) @ plugin-samples ---
+[DEBUG] :: in: {"text":"text","l1":[{"i1":"test2"},{"i1":"test3","i2":"test4"}]}
 [INFO] (1) ad: @ | key1 | {"a1": "a2"}
-[INFO] (2) ad: $.l1 | null | {"l2": "test5"}
-[INFO] :3: validation: {"i1":"test2"} == {"i1":"test2"}
-[INFO] (3) ad: $.l1[2] | i1 | test4
+[INFO] (2) ad: $.l1 | null | value1
+[DEBUG] :: out: {"text":"text","l1":[{"i1":"test2"},{"i1":"test3","i2":"test4"},"value1"],"key1":{"a1":"a2"}}
 ```
 
 <details><summary>Insert samples</summary>
