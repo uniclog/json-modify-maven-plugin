@@ -11,12 +11,15 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 ### Plugin configuration
 
 ```xml
+
 <plugin>
     <groupId>io.github.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
     <version>1.1</version>
 </plugin>
 ``` 
+
+___
 
 #### Configuration properties
 
@@ -26,52 +29,57 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 | json.out   | Json output path   |
 | executions | Modifications list |
 
+___
+
 #### Execution properties:
 
 | Parameter             | Description                                                    | Default | Type     |
 |:----------------------|:---------------------------------------------------------------|---------|----------|
-| token                 | Field json-path                                                |         |          |
-| value                 | New field value                                                |         |          |
-| key                   | Json output path                                               |         | Optional |
-| type                  | Type of field                                                  | string  | Optional |
-| validation            | Check old field value                                          | false   | Optional |
+| token                 | field json-path                                                |         |          |
+| value                 | new field value                                                |         |          |
+| key                   | field key name                                                 |         | Optional |
+| type                  | field type                                                     | string  | Optional |
+| validation            | check old field value                                          | false   | Optional |
 | skipIfNotFoundElement | Skip execution if the path is not correct or validation failed | false   | Optional |
 | arrayIndex            | Insert by array index                                          |         | Optional |
 
-<details><summary>Supported types</summary>
+___
 
-| Supported Types | `type` property                                                | Example |
-|:----------------|:---------------------------------------------------------------|---------|
-| STRING          | Field json-path                                                |         |
-| INTEGER         | New field value                                                |         |
-| DOUBLE          | Json output path                                               |         |
-| BOOLEAN         | Type of field                                                  |         |
-| NULL            | Check old field value                                          |         |
-| JSON            | Skip execution if the path is not correct or validation failed |         |
+#### Supported types
 
-</details>
+| Supported Types | `type` property        |
+|:----------------|:-----------------------|
+| STRING          | `<type>string</type>`  |
+| INTEGER         | `<type>integer</type>` |
+| DOUBLE          | `<type>double</type>`  |
+| BOOLEAN         | `<type>boolean</type>` |
+| NULL            | `<type>null</type>`    |
+| JSON            | `<type>json</type>`    |
 
-## Modify json fields
+___
+
+## Modify json fields example
 
 ```xml
+
 <execution>
-            <id>modify-json</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>modify</goal>
-            </goals>
-            <configuration>
-                <json.in>target/classes/test.json</json.in>
-                <json.out>target/classes/test_out.json</json.out>
-                <executions>
-                    <execution>
-                        <token>$.text</token>
-                        <value>new text</value>
-                        <validation>"Test"</validation>
-                    </execution>
-                </executions>
-            </configuration>
-        </execution>
+    <id>modify-json</id>
+    <phase>prepare-package</phase>
+    <goals>
+        <goal>modify</goal>
+    </goals>
+    <configuration>
+        <json.in>target/classes/test.json</json.in>
+        <json.out>target/classes/test_out.json</json.out>
+        <executions>
+            <execution>
+                <token>$.text</token>
+                <value>new text</value>
+                <validation>"Test"</validation>
+            </execution>
+        </executions>
+    </configuration>
+</execution>
 ```
 
 #### Build log
@@ -85,11 +93,12 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 <details><summary>Modify samples</summary>
 
 ```xml
+
 <build>
     <plugins>
         <plugin>
             <groupId>da.local.uniclog</groupId>
-            <artifactId>json-modify-maven-plugin</artifactId> 
+            <artifactId>json-modify-maven-plugin</artifactId>
             <executions>
                 <execution>
                     <id>parse-json-files</id>
@@ -150,10 +159,15 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
     </plugins>
 </build>
 ```
+
 </details>
 
-## Remove json fields
+---
+
+## Remove json fields example
+
 ```xml
+
 <execution>
     <id>remove-json</id>
     <phase>prepare-package</phase>
@@ -177,6 +191,7 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
     </configuration>
 </execution>
 ```
+
 #### Build log
 
 ```log
@@ -190,6 +205,7 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 <details><summary>Remove samples</summary>
 
 ```xml
+
 <plugins>
     <plugin>
         <groupId>da.local.uniclog</groupId>
@@ -239,9 +255,12 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 
 </details>
 
-## Insert json fields
+---
+
+## Insert json fields example
 
 ```xml
+
 <execution>
     <id>remove-json</id>
     <phase>prepare-package</phase>
@@ -277,6 +296,7 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 <details><summary>Insert samples</summary>
 
 ```xml
+
 <plugins>
     <plugin>
         <groupId>da.local.uniclog</groupId>
