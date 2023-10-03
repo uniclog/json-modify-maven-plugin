@@ -173,6 +173,24 @@
                             </executions>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>add-json-as-mask</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>insert</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test_out.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$.resources[?(@.resource == 'url/document/*')].properties[?(@.name == 'content')].policies.*</token>
+                                    <value>{"a1": "a2"}</value>
+                                    <type>json</type>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
