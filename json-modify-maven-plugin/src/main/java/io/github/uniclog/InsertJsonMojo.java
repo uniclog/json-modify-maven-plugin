@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
 
 @Mojo(name = "insert", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
-    @Parameter(alias = "json.in", required = true)
+    @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
