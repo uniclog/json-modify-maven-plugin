@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
 
 @Mojo(name = "insert", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
-    @Parameter(alias = "json.in", required = true)
+    @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
@@ -53,7 +53,8 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
                 if (isNull(ex.getArrayIndex())) {
                     addElement(ex, outArrayNode, value);
                 }
-                json.set(ex.getToken(), outArrayNode);
+                var insertToken = ex.getToken().replaceAll("\\.\\*$", "");
+                json.set(insertToken, outArrayNode);
             }
             info(String.format("(%d) ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
         };

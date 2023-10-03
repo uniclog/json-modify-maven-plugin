@@ -47,5 +47,29 @@
   ],
   "arr": {
     "null": null
-  }
+  },
+  "resources": [
+    {
+      "resource": "url/*"
+    },
+    {
+      "resource": "url/is/*"
+    },
+    {
+      "resource": "url/document/*",
+      "properties": [
+        {
+          "name": "content",
+          "policies": [
+            {
+              "policyId": "required"
+            },
+            {
+              "policyId": "notChangeableProperty"
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }

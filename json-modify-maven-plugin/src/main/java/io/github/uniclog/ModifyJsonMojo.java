@@ -18,7 +18,7 @@ import static java.lang.String.format;
 
 @Mojo(name = "modify", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
-    @Parameter(alias = "json.in", required = true)
+    @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
@@ -27,7 +27,7 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
 
     @Override
     public void execute() throws MojoExecutionException {
-        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer>  executeConsumer = (json, ex, exIndex) -> {
+        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
             Object value = getElement(ex.getType(), ex.getValue());
             var old = json.read(ex.getToken());
             json.set(ex.getToken(), value);

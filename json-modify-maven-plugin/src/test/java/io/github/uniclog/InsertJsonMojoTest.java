@@ -3,6 +3,7 @@ package io.github.uniclog;
 import io.github.uniclog.execution.ExecutionMojo;
 import io.github.uniclog.utils.UtilsInterface;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,7 +19,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class InsertJsonMojoTest implements TestUtils {
+class InsertJsonMojoTest implements TestUtils {
     private InsertJsonMojo service;
 
     @Override
@@ -37,10 +38,22 @@ public class InsertJsonMojoTest implements TestUtils {
             "insertValueKeyField", "insertNewArrayItem",
             "insertNewArrayItemToIndex", "notInsertNewArrayItem_notValid_or_skipIfNotFound"})
     @ParameterizedTest
-    public void testInsertJsonMojo(ExecutionMojo execution, String validation, String token) {
+    void testInsertJsonMojo(ExecutionMojo execution, String validation, String token) {
         doReturn(List.of(execution)).when(service).getExecutions();
         assertDoesNotThrow(() -> service.execute());
         assertDoesNotThrow(() -> validation(execution, validation, token));
+    }
+
+    @Test
+    void testInsertFindPath() {
+        ExecutionMojo execution = getSpyExecutionMojo(
+                "$.resource[?(@.title == \"text\")].content.*",
+                null, "{\"a1\": \"a2\"}", JSON, null, false, null);
+        doReturn(List.of(execution)).when(service).getExecutions();
+        assertDoesNotThrow(() -> service.execute());
+        assertDoesNotThrow(() -> validation(execution,
+                "[\"a2\"]",
+                "$.resource[?(@.title == \"text\")].content[?(@.a1 == \"a2\")].a1"));
     }
 
     private Stream<Arguments> insertValueKeyField() {

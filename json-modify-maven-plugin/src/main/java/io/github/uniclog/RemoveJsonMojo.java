@@ -18,7 +18,7 @@ import static java.lang.String.format;
 
 @Mojo(name = "remove", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
 public class RemoveJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
-    @Parameter(alias = "json.in", required = true)
+    @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
     private String jsonOutputPath;
