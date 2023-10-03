@@ -37,7 +37,7 @@ class RemoveJsonMojoTest implements TestUtils {
             "notRemoveJsonElement_notValid_or_skipIfNotFound", "removeJsonElement"
     })
     @ParameterizedTest
-    public void testRemoveJsonMojo(ExecutionMojo execution, String validation, String token) {
+    void testRemoveJsonMojo(ExecutionMojo execution, String validation, String token) {
         doReturn(List.of(execution)).when(service).getExecutions();
         assertDoesNotThrow(() -> service.execute());
         assertDoesNotThrow(() -> validation(execution, validation, token));

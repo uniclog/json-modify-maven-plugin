@@ -19,7 +19,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class InsertJsonMojoTest implements TestUtils {
+class InsertJsonMojoTest implements TestUtils {
     private InsertJsonMojo service;
 
     @Override
@@ -38,7 +38,7 @@ public class InsertJsonMojoTest implements TestUtils {
             "insertValueKeyField", "insertNewArrayItem",
             "insertNewArrayItemToIndex", "notInsertNewArrayItem_notValid_or_skipIfNotFound"})
     @ParameterizedTest
-    public void testInsertJsonMojo(ExecutionMojo execution, String validation, String token) {
+    void testInsertJsonMojo(ExecutionMojo execution, String validation, String token) {
         doReturn(List.of(execution)).when(service).getExecutions();
         assertDoesNotThrow(() -> service.execute());
         assertDoesNotThrow(() -> validation(execution, validation, token));

@@ -73,7 +73,6 @@ public class Utils {
 
     private <T> T getJsonValue(String value) {
         DocumentContext valueAsJson = JsonPath.using(getConfiguration()).parse(value);
-        //log.debug(":: JSON: " + valueAsJson.jsonString());
         return valueAsJson.json();
     }
 
@@ -82,7 +81,6 @@ public class Utils {
             return fun.apply(value);
         } catch (NumberFormatException ex) {
             String err = String.format("Convert format exception: %s -> %s", value, type.getValue());
-            //log.error(err);
             throw new MojoExecutionException(err, ex);
         }
     }

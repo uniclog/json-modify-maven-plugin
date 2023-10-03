@@ -37,7 +37,7 @@ class ModifyJsonMojoTest implements TestUtils {
             "modifyJsonElement", "notModifyJsonElement_notValid_or_skipIfNotFound"
     })
     @ParameterizedTest
-    public void testModifyJsonMojo(ExecutionMojo execution, String validation, String token) {
+    void testModifyJsonMojo(ExecutionMojo execution, String validation, String token) {
         doReturn(List.of(execution)).when(service).getExecutions();
         assertDoesNotThrow(() -> service.execute());
         assertDoesNotThrow(() -> validation(execution, validation, token));
