@@ -37,8 +37,9 @@
         <plugin.maven.source>3.3.0</plugin.maven.source>
         <plugin.maven.javadoc>3.6.0</plugin.maven.javadoc>
         <plugin.maven.gpg>3.1.0</plugin.maven.gpg>
-        <plugin.maven.compiler>3.6.0</plugin.maven.compiler>
+        <plugin.maven.compiler>3.9.0</plugin.maven.compiler>
         <plugin.maven.release>3.0.1</plugin.maven.release>
+        <plugin.maven.resources>3.3.1</plugin.maven.resources>
     </properties>
 
     <dependencies>
@@ -157,6 +158,11 @@
                     <releaseProfiles>release</releaseProfiles>
                     <goals>deploy</goals>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${plugin.maven.resources}</version>
             </plugin>
         </plugins>
     </build>
