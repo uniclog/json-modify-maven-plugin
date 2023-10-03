@@ -1,6 +1,7 @@
 # Maven-plugin for modify json
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.uniclog/json-modify-maven-plugin)](https://mvnrepository.com/artifact/io.github.uniclog/json-modify-maven-plugin)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=uniclog_json-modify-maven-plugin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=uniclog_json-modify-maven-plugin)
 
 Plugin support to modify (update, insert, remove) json files when building a project.
 
@@ -15,7 +16,7 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 <plugin>
     <groupId>io.github.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </plugin>
 ``` 
 
