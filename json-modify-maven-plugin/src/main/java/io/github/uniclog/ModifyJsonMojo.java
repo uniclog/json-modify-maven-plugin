@@ -27,7 +27,7 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
 
     @Override
     public void execute() throws MojoExecutionException {
-        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer>  executeConsumer = (json, ex, exIndex) -> {
+        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
             Object value = getElement(ex.getType(), ex.getValue());
             var old = json.read(ex.getToken());
             json.set(ex.getToken(), value);
