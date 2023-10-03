@@ -53,7 +53,8 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
                 if (isNull(ex.getArrayIndex())) {
                     addElement(ex, outArrayNode, value);
                 }
-                json.set(ex.getToken(), outArrayNode);
+                var insertToken = ex.getToken().replaceAll("\\.\\*$", "");
+                json.set(insertToken, outArrayNode);
             }
             info(String.format("(%d) ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
         };
