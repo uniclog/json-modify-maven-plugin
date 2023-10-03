@@ -22,5 +22,21 @@
       "i1": "test3",
       "i2": "test4"
     }
+  ],
+  "resource": [
+    {
+      "i1": "test1"
+    },
+    {
+      "title" : "text",
+      "content" : [
+        {
+          "data" : "text-1"
+        },
+        {
+          "data" : "text-2"
+        }
+      ]
+    }
   ]
 }
