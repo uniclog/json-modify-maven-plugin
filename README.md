@@ -12,14 +12,21 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 ### Plugin configuration
 
 ```xml
-
 <plugin>
     <groupId>io.github.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
     <version>1.2</version>
 </plugin>
+```
+```xml
+<pluginRepositories>
+    <pluginRepository>
+        <id>sonatype-releases</id>
+        <name>Sonatype Releases</name>
+        <url>https://s01.oss.sonatype.org/content/repositories/releases/</url>
+    </pluginRepository>
+</pluginRepositories>
 ``` 
-
 ___
 
 #### Configuration properties
