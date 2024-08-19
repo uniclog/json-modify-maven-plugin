@@ -11,8 +11,8 @@
     "text",
     "test2"
   ],
-  "jo" : {
-    "value1" : "value1"
+  "jo": {
+    "value1": "value1"
   },
   "l1": [
     {
@@ -32,6 +32,16 @@
   "modifyArray": [
     "test1",
     "arrayTest"
+  ],
+  "insertInArray2": [
+    {
+      "key": "user",
+      "user": [
+        "arrayTest1",
+        "arrayTest2",
+        "arrayTest3"
+      ]
+    }
   ],
   "data": {
     "name": "name",

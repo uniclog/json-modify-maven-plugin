@@ -22,6 +22,25 @@
                 <version>1.3-SNAPSHOT</version>
                 <executions>
                     <execution>
+                        <id>edit-by-regex</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>regex</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test_out.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>(?&lt;="number3":\s)[1-9].[1-9]</token>
+                                    <value>123.456,
+                                        "number4" : 123
+                                    </value>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>modify-json</id>
                         <phase>prepare-package</phase>
                         <goals>
@@ -75,7 +94,6 @@
                             </executions>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>add-json</id>
                         <phase>prepare-package</phase>
@@ -135,7 +153,6 @@
                             </executions>
                         </configuration>
                     </execution>
-
                     <execution>
                         <id>remove-json</id>
                         <phase>prepare-package</phase>
