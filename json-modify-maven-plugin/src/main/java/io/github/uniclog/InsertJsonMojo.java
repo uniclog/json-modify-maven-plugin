@@ -8,7 +8,6 @@ import com.jayway.jsonpath.JsonPath;
 import io.github.uniclog.execution.ExecutionMojo;
 import io.github.uniclog.execution.ExecutionType;
 import io.github.uniclog.utils.ExecuteConsumer;
-import io.github.uniclog.utils.JmLogger;
 import io.github.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -19,11 +18,13 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.util.List;
 
+import static io.github.uniclog.execution.DocumentType.JSON;
+import static io.github.uniclog.utils.DataUtils.getElement;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Mojo(name = "insert", defaultPhase = LifecyclePhase.PREPARE_PACKAGE)
-public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLogger {
+public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
     @Parameter(alias = "json.in")
     private String jsonInputPath;
     @Parameter(alias = "json.out")
@@ -33,7 +34,9 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
 
     @Override
     public void execute() throws MojoExecutionException {
-        ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer = (json, ex, exIndex) -> {
+        ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer = (object, ex, exIndex) -> {
+            DocumentContext json = (DocumentContext) object;
+
             Object value = getElement(ex.getType(), ex.getValue());
 
             JsonPath pathToArray = JsonPath.compile(ex.getToken());
@@ -59,7 +62,7 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface, JmLo
             info(String.format("(%d) ad: %s | %s | %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue()));
         };
 
-        executeAction(executeConsumer);
+        executeAction(executeConsumer, JSON);
     }
 
     private void addElement(ExecutionMojo ex, ArrayNode outArrayNode, Object value) {
