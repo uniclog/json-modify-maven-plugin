@@ -5,6 +5,7 @@ import io.github.uniclog.execution.ExecutionType;
 import io.github.uniclog.utils.UtilsInterface;
 import org.apache.maven.plugin.MojoExecutionException;
 
+import static io.github.uniclog.utils.FileUtils.readJsonObject;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
@@ -30,7 +31,7 @@ interface TestUtils {
     default void validation(ExecutionMojo execution, String validation, String token) throws MojoExecutionException {
         setValidation(execution, validation);
         setToken(execution, token);
-        var document = getService().readJsonObject(outputPath);
+        var document = readJsonObject(outputPath);
         getService().validation(document, execution, null);
     }
 

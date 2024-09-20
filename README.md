@@ -15,7 +15,7 @@ To check json paths you can use service [JSONPath Online Evaluator](https://json
 <plugin>
     <groupId>io.github.uniclog</groupId>
     <artifactId>json-modify-maven-plugin</artifactId>
-    <version>1.2</version>
+    <version>${plugin-version}</version>
 </plugin>
 ```
 ```xml

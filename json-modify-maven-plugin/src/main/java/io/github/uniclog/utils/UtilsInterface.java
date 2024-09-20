@@ -2,19 +2,18 @@ package io.github.uniclog.utils;
 
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPathException;
+import io.github.uniclog.execution.DocumentType;
 import io.github.uniclog.execution.ExecutionMojo;
-import io.github.uniclog.execution.ExecutionType;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.logging.Log;
 
 import java.util.List;
 
+import static io.github.uniclog.utils.FileUtils.*;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public interface UtilsInterface {
-    Utils utils = new Utils();
+public interface UtilsInterface extends JmLogger {
 
     String getJsonInputPath();
 
@@ -22,23 +21,34 @@ public interface UtilsInterface {
 
     List<ExecutionMojo> getExecutions();
 
-    Log getLogger();
-
-    default void executeAction(ExecuteConsumer<DocumentContext, ExecutionMojo, Integer> executeConsumer) throws MojoExecutionException {
+    default void executeAction(ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer, DocumentType docType) throws MojoExecutionException {
         getLogger().debug(":: pr: " + getJsonInputPath());
         getLogger().debug(":: pr: " + getJsonOutputPath());
         getExecutions().forEach(ex -> getLogger().debug(":: pr: " + ex.toString()));
 
+        Object out;
+        switch (docType) {
+            case DOCUMENT: {
+                out = documentExecution(executeConsumer);
+                break;
+            }
+            case JSON:
+            default:
+                out = jsonExecution(executeConsumer);
+        }
+
+        getLogger().debug(":: out: " + out);
+    }
+
+    default DocumentContext jsonExecution(ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer) throws MojoExecutionException {
         DocumentContext json = readJsonObject(getJsonInputPath());
         getLogger().debug(":: in: " + json.jsonString());
-        var exIndex = 1;
-        for (ExecutionMojo ex : getExecutions()) {
+        var executions = getExecutions();
+        for (int exIndex = 0; exIndex < executions.size(); exIndex++) {
+            ExecutionMojo ex = executions.get(exIndex);
             try {
                 validation(json, ex, exIndex);
-
                 executeConsumer.accept(json, ex, exIndex);
-
-                exIndex++;
             } catch (JsonPathException e) {
                 String err = format("(%d) not found json element %s : %s : %s", exIndex, ex.getToken(), ex.getKey(), ex.getValue());
                 if (!ex.isSkipIfNotFoundElement()) {
@@ -56,25 +66,23 @@ public interface UtilsInterface {
             }
         }
 
-        writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
-        getLogger().debug(":: out: " + json.jsonString());
+        return writeJsonObject(json, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
     }
 
-    default Object getElement(ExecutionType type, String value) throws MojoExecutionException {
-        return utils.getElement(type, value);
-    }
+    default Object documentExecution(ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer) throws MojoExecutionException {
+        StringBuilder document = new StringBuilder(readObject(getJsonInputPath()));
+        getLogger().debug(":: in: " + document);
+        var executions = getExecutions();
+        for (int i = 0; i < executions.size(); i++) {
+            executeConsumer.accept(document, executions.get(i), i);
+        }
 
-    default DocumentContext readJsonObject(String jsonInputPath) throws MojoExecutionException {
-        return utils.readJsonObject(jsonInputPath);
-    }
-
-    default void writeJsonObject(DocumentContext json, String jsonOutputPath) throws MojoExecutionException {
-        utils.writeJsonObject(json, jsonOutputPath);
+        return writeObject(document, isNull(getJsonOutputPath()) ? getJsonInputPath() : getJsonOutputPath());
     }
 
     default void validation(DocumentContext json, ExecutionMojo ex, Integer exIndex) throws UnsupportedOperationException {
-        if (nonNull(ex.getValidation()) && utils.validation(json, ex, exIndex, getLogger())) {
-            String err = String.format("(%d) Not valid element \"%s\" = %s", exIndex, ex.getToken(), ex.getValidation());
+        if (nonNull(ex.getValidation()) && DataUtils.validation(json, ex, exIndex, getLogger())) {
+            String err = format("(%d) Not valid element \"%s\" = %s", exIndex, ex.getToken(), ex.getValidation());
             getLogger().error(err);
             throw new UnsupportedOperationException(err);
         }
