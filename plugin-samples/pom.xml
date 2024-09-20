@@ -88,7 +88,9 @@
                                 </execution>
                                 <execution>
                                     <token>$.data.jsonValue</token>
-                                    <value>{"text": "Test", "flag": true, "number": 1, "number2": 2.5, "d":{"r" : "t"}}</value>
+                                    <value>{"text": "Test", "flag": true, "number": 1, "number2": 2.5, "d":{"r" :
+                                        "t"}}
+                                    </value>
                                     <type>json</type>
                                 </execution>
                             </executions>
@@ -201,9 +203,38 @@
                             <json.out>target/classes/test_out.json</json.out>
                             <executions>
                                 <execution>
-                                    <token>$.resources[?(@.resource == 'url/document/*')].properties[?(@.name == 'content')].policies.*</token>
+                                    <token>$.resources[?(@.resource == 'url/document/*')].properties[?(@.name ==
+                                        'content')].policies.*
+                                    </token>
                                     <value>{"a1": "a2"}</value>
                                     <type>json</type>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>modify-json-incorrect-token</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>modify</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test_out.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$.
+                                        text
+                                    </token>
+                                    <value>new text</value>
+                                    <validation>"Test"</validation>
+                                </execution>
+                                <execution>
+                                    <token>$.resources[?(
+                                        @['name with spaces'] == 'test')]
+                                        .['name with spaces']
+                                    </token>
+                                    <value>test2</value>
                                 </execution>
                             </executions>
                         </configuration>
