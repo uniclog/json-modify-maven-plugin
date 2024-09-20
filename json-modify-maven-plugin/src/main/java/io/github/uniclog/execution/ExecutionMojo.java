@@ -19,7 +19,8 @@ public class ExecutionMojo {
     private boolean skipIfNotFoundElement;
 
     public String getToken() {
-        return token;
+        return token.replaceAll("(?<=[\\r\\n])\\s+", "")
+                .replaceAll("[\\r\\n]", "");
     }
 
     public String getKey() {
