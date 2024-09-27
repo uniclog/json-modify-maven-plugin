@@ -3,11 +3,15 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.uniclog/json-modify-maven-plugin)](https://mvnrepository.com/artifact/io.github.uniclog/json-modify-maven-plugin)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=uniclog_json-modify-maven-plugin&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=uniclog_json-modify-maven-plugin)
 
-Plugin support to modify (update, insert, remove) json files when building a project.
+Plugin support for modifying (updating, inserting, removing) JSON files during the project build process.
 
-For modify plugin reads json, using a json path as node names.
+The plugin modifies JSON by reading the file and using JSON paths as node references.
 
-To check json paths you can use service [JSONPath Online Evaluator](https://jsonpath.com/)
+Additionally, the plugin supports file modification using regular expressions.
+
+To check JSON paths, you can use the service [JSONPath Online Evaluator](https://jsonpath.com/)
+
+The plugin supports the following actions: `insert`, `modify`, `remove`, `regex`.
 
 ### Plugin configuration
 
@@ -385,3 +389,33 @@ ___
 ```
 
 </details>
+
+## Regex as token
+
+```xml
+
+<execution>
+    <id>edit-by-regex</id>
+    <phase>prepare-package</phase>
+    <goals>
+        <goal>regex</goal>
+    </goals>
+    <configuration>
+        <json.in>target/classes/test.json</json.in>
+        <json.out>target/classes/test_out.json</json.out>
+        <executions>
+            <execution>
+                <token>(?&lt;="number3":\s)[1-9].[1-9]</token>
+                <value>123.456,
+                    "number4" : 123
+                </value>
+            </execution>
+        </executions>
+    </configuration>
+</execution>
+```
+
+```log
+[INFO] --- json-modify:1.3-SNAPSHOT:regex (edit-by-regex) @ plugin-samples ---
+[INFO] (0) mr: (?<="number3":\s)[1-9].[1-9]
+```
