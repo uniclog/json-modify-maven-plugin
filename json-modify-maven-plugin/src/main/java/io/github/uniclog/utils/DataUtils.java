@@ -9,8 +9,9 @@ import org.apache.maven.plugin.logging.Log;
 
 import java.util.function.Function;
 
-import static io.github.uniclog.utils.FileUtils.getConfiguration;
+import static io.github.uniclog.utils.FileUtils.*;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class DataUtils {
@@ -22,7 +23,15 @@ public class DataUtils {
         return !node.equals(ex.getValidation());
     }
 
-    public static Object getElement(ExecutionType type, String value) throws MojoExecutionException {
+    public static Object getElement(ExecutionType type, String value, String valueFile) throws MojoExecutionException {
+        if (isNull(value) && nonNull(valueFile)) {
+            switch (type) {
+                case JSON:
+                    return readJsonObject(valueFile).json();
+                default:
+                    return getElement(type, readObject(valueFile), null);
+            }
+        }
         switch (type) {
             case BOOLEAN:
                 return getPrimitiveValue(value, Boolean::valueOf, ExecutionType.BOOLEAN);

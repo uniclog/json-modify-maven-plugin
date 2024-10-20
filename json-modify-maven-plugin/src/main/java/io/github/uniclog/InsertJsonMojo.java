@@ -37,7 +37,7 @@ public class InsertJsonMojo extends AbstractMojo implements UtilsInterface {
         ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer = (object, ex, exIndex) -> {
             DocumentContext json = (DocumentContext) object;
 
-            Object value = getElement(ex.getType(), ex.getValue());
+            Object value = getElement(ex.getType(), ex.getValue(), ex.getValueFile());
 
             JsonPath pathToArray = JsonPath.compile(ex.getToken());
             debug("pathToArray=" + pathToArray.getPath());
