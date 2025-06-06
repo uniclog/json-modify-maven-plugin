@@ -53,7 +53,7 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
                 allowedDisplayValues.add(node.asText());
             }
 
-            getLog().info("Checking display values in: " + inputFile.getAbsolutePath());
+            getLog().info("Checking display values in: " + inputFile.getName());
             JsonNode root = mapper.readTree(inputFile);
             validateRecursively(root, allowedDisplayValues, "");
             if (isError) {
@@ -75,7 +75,7 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
                     for (JsonNode val : managedNode.get("display")) {
                         String value = val.asText();
                         if (!allowedValues.contains(value)) {
-                            getLog().info("Invalid display value '" + value +
+                            getLog().warn("Invalid display value '" + value +
                                     "' at path '" + path + ".managed.display'.");
                             isError = true;
                         }
