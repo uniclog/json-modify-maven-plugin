@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>io.github.uniclog</groupId>
                 <artifactId>json-modify-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.5-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>edit-by-regex</id>
