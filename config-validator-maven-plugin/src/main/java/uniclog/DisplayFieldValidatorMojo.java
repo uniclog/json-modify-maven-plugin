@@ -11,6 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,15 +23,26 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
     @Parameter(property = "inputFile", required = true)
     private File inputFile;
 
-    @Parameter(property = "allowedValuesFile", required = true)
+    @Parameter(property = "allowedValuesFile")
     private File allowedValuesFile;
+
+    private static boolean isError = false;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         ObjectMapper mapper = new ObjectMapper();
-
         try {
-            JsonNode allowedRoot = mapper.readTree(allowedValuesFile);
+            JsonNode allowedRoot;
+            if (allowedValuesFile != null && allowedValuesFile.exists()) {
+                allowedRoot = mapper.readTree(allowedValuesFile);
+            } else {
+                try (InputStream in = getClass().getResourceAsStream("/default-allowed-display-values.json")) {
+                    if (in == null) {
+                        throw new MojoExecutionException("Default allowed values file not found in resources.");
+                    }
+                    allowedRoot = mapper.readTree(in);
+                }
+            }
             JsonNode allowedArray = allowedRoot.path("allowedDisplayValues");
             if (!allowedArray.isArray()) {
                 throw new MojoFailureException("allowedDisplayValues must be an array");
@@ -40,38 +52,41 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
             for (JsonNode node : allowedArray) {
                 allowedDisplayValues.add(node.asText());
             }
-
             JsonNode root = mapper.readTree(inputFile);
-            JsonNode managedApprole = root.path("managed/approle");
-
-            if (managedApprole.isMissingNode() || !managedApprole.isObject()) {
-                throw new MojoFailureException("Missing or invalid 'managed/approle' section in JSON");
+            validateRecursively(root, allowedDisplayValues, "");
+            if (isError) {
+                throw new MojoFailureException("Display value validation failed.");
             }
+        } catch (IOException e) {
+            throw new MojoExecutionException("Failed to read JSON files", e);
+        }
+    }
 
-            Iterator<Map.Entry<String, JsonNode>> fields = managedApprole.fields();
-
-            while (fields.hasNext()) {
-                Map.Entry<String, JsonNode> fieldEntry = fields.next();
-                JsonNode managedNode = fieldEntry.getValue().path("managed");
-
-                if (managedNode.has("display")) {
-                    JsonNode displayNode = managedNode.get("display");
-
-                    if (displayNode.isArray()) {
-                        for (JsonNode value : displayNode) {
-                            String val = value.asText();
-                            if (!allowedDisplayValues.contains(val)) {
-                                throw new MojoFailureException("Invalid display value '" + val +
-                                        "' in field '" + fieldEntry.getKey() + "'. Allowed: " + allowedDisplayValues);
-                            }
+    private void validateRecursively(JsonNode node, Set<String> allowedValues, String path) throws MojoFailureException {
+        if (node.isObject()) {
+            if (node.has("managed")) {
+                JsonNode managedNode = node.get("managed");
+                if (managedNode.has("display") && managedNode.get("display").isArray()) {
+                    for (JsonNode val : managedNode.get("display")) {
+                        String value = val.asText();
+                        if (!allowedValues.contains(value)) {
+                            getLog().info("Invalid display value '" + value +
+                                    "' at path '" + path + ".managed.display'.");
+                            isError = true;
                         }
                     }
                 }
             }
-
-            getLog().info("Display field validation passed.");
-        } catch (IOException e) {
-            throw new MojoExecutionException("Failed to read JSON files", e);
+            Iterator<Map.Entry<String, JsonNode>> fields = node.fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
+                String childPath = path.isEmpty() ? entry.getKey() : path + "." + entry.getKey();
+                validateRecursively(entry.getValue(), allowedValues, childPath);
+            }
+        } else if (node.isArray()) {
+            for (JsonNode element : node) {
+                validateRecursively(element, allowedValues, path);
+            }
         }
     }
 }
