@@ -292,7 +292,7 @@
                     <plugin>
                         <groupId>io.github.uniclog</groupId>
                         <artifactId>config-validator-maven-plugin</artifactId>
-                        <version>LATEST</version>
+                        <version>1.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <id>validate-display-values-2</id>
@@ -328,7 +328,7 @@
                     <plugin>
                         <groupId>io.github.uniclog</groupId>
                         <artifactId>json-modify-maven-plugin</artifactId>
-                        <version>LATEST</version>
+                        <version>1.5-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <id>edit-by-regex</id>

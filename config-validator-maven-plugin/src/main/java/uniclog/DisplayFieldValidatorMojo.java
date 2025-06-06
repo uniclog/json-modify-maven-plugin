@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.String.format;
+
 @Mojo(name = "validate-display-values", defaultPhase = LifecyclePhase.VERIFY)
 public class DisplayFieldValidatorMojo extends AbstractMojo {
 
@@ -75,8 +77,7 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
                     for (JsonNode val : managedNode.get("display")) {
                         String value = val.asText();
                         if (!allowedValues.contains(value)) {
-                            getLog().warn("Invalid display value '" + value +
-                                    "' at path '" + path + ".managed.display'.");
+                            getLog().warn(format("Invalid display value '%s' at path '%s.managed.display'.", value, path));
                             isError = true;
                         }
                     }
