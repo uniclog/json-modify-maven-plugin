@@ -22,9 +22,10 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
 
     @Parameter(property = "inputFile", required = true)
     private File inputFile;
-
     @Parameter(property = "allowedValuesFile")
     private File allowedValuesFile;
+    @Parameter(property = "warnMode", defaultValue = "false")
+    private Boolean warnMode;
 
     private static boolean isError = false;
 
@@ -47,15 +48,19 @@ public class DisplayFieldValidatorMojo extends AbstractMojo {
             if (!allowedArray.isArray()) {
                 throw new MojoFailureException("allowedDisplayValues must be an array");
             }
-
             Set<String> allowedDisplayValues = new HashSet<>();
             for (JsonNode node : allowedArray) {
                 allowedDisplayValues.add(node.asText());
             }
+
+            getLog().info("Checking display values in: " + inputFile.getAbsolutePath());
             JsonNode root = mapper.readTree(inputFile);
             validateRecursively(root, allowedDisplayValues, "");
             if (isError) {
-                throw new MojoFailureException("Display value validation failed.");
+                if (!warnMode) {
+                    throw new MojoFailureException("Display value validation failed.");
+                }
+                getLog().error("Display value validation failed.");
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Failed to read JSON files", e);
