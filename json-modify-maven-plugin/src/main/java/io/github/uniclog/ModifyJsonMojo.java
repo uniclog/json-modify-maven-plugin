@@ -30,7 +30,7 @@ public class ModifyJsonMojo extends AbstractMojo implements UtilsInterface {
     public void execute() throws MojoExecutionException {
         ExecuteConsumer<Object, ExecutionMojo, Integer> executeConsumer = (object, ex, exIndex) -> {
             DocumentContext json = (DocumentContext) object;
-            Object value = getElement(ex.getType(), ex.getValue());
+            Object value = getElement(ex.getType(), ex.getValue(), ex.getValueFile());
             var old = json.read(ex.getToken());
             json.set(ex.getToken(), value);
             info(format("(%d) md: %s: %s -> %s", exIndex, ex.getToken(), old, value));

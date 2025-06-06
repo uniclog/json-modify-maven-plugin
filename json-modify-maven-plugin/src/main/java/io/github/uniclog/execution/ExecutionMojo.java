@@ -10,6 +10,8 @@ public class ExecutionMojo {
     @Parameter
     private String value;
     @Parameter
+    private String valueFile;
+    @Parameter
     private Integer arrayIndex;
     @Parameter
     private String type;
@@ -29,6 +31,10 @@ public class ExecutionMojo {
 
     public String getValue() {
         return value;
+    }
+
+    public String getValueFile() {
+        return valueFile;
     }
 
     public Integer getArrayIndex() {
@@ -52,6 +58,7 @@ public class ExecutionMojo {
         return "ExecutionMojo{" +
                 "token='" + getToken() + '\'' +
                 ", value='" + getValue() + '\'' +
+                ", valueFile='" + getValueFile() + '\'' +
                 ", key='" + getKey() + '\'' +
                 ", type='" + getType() + '\'' +
                 ", validation='" + getValidation() + '\'' +

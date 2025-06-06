@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>io.github.uniclog</groupId>
                 <artifactId>json-modify-maven-plugin</artifactId>
-                <version>1.3-SNAPSHOT</version>
+                <version>1.4-SNAPSHOT</version>
                 <executions>
                     <execution>
                         <id>edit-by-regex</id>
@@ -235,6 +235,47 @@
                                         .['name with spaces']
                                     </token>
                                     <value>test2</value>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>modify-json-from-file</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>modify</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test_out.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$.text</token>
+                                    <valueFile>src/main/resources/input_data.json</valueFile>
+                                    <type>json</type>
+                                </execution>
+                                <execution>
+                                    <token>$.text2</token>
+                                    <valueFile>src/main/resources/input_data.json</valueFile>
+                                </execution>
+                            </executions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>modify-json-from-file-insert</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>insert</goal>
+                        </goals>
+                        <configuration>
+                            <json.in>target/classes/test.json</json.in>
+                            <json.out>target/classes/test_out.json</json.out>
+                            <executions>
+                                <execution>
+                                    <token>$</token>
+                                    <key>resourceFromFile</key>
+                                    <valueFile>${project.basedir}/src/main/resources/input_data.json</valueFile>
+                                    <type>json</type>
                                 </execution>
                             </executions>
                         </configuration>

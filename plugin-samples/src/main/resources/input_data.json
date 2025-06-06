@@ -1,0 +1,10 @@
+{
+  "testInsertFromFile": [
+    {
+      "policyId": "required"
+    },
+    {
+      "policyId": "notChangeableProperty"
+    }
+  ]
+}
