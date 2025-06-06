@@ -12,6 +12,7 @@
     <modules>
         <module>json-modify-maven-plugin</module>
         <module>plugin-samples</module>
+        <module>config-validator-maven-plugin</module>
     </modules>
 
     <developers>
