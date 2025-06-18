@@ -1,0 +1,41 @@
+{
+  "managed/approle": {
+    "MarkForDeleted": {
+      "repo": {
+        "type": "STRING",
+        "column": "mark_for_deleted"
+      },
+      "policy": {
+        "policies": [
+          {
+            "policyId": "maximumLength"
+          }
+        ]
+      },
+      "managed": {
+        "display": [
+          "create",
+          "update",
+          "view",
+          "search"
+        ],
+        "fieldType": "enum"
+      }
+    }
+  },
+  "managed/user": {
+    "roleTypeAutoRules": {
+      "repo": {
+        "column": "role_type_auto_rules"
+      },
+      "managed": {
+        "display": [
+          "create",
+          "view",
+          "search"
+        ],
+        "required": false
+      }
+    }
+  }
+}
