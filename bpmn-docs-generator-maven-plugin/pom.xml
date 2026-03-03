@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>BPMN Json Generator Maven Plugin</name>
+    <name>BPMN Docs Generator Maven Plugin</name>
     <url>https://github.com/uniclog/uniclog-maven-plugin</url>
     <description>Plugin for bpmn configs</description>
     <inceptionYear>2026</inceptionYear>
