@@ -13,6 +13,7 @@
         <module>json-modify-maven-plugin</module>
         <module>config-validator-maven-plugin</module>
         <module>plugin-samples</module>
+        <module>bpmn-docs-generator-maven-plugin</module>
     </modules>
 
     <developers>
